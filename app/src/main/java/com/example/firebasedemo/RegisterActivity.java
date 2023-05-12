@@ -32,6 +32,9 @@ public class RegisterActivity extends AppCompatActivity {
                 if(TextUtils.isEmpty(txtEmail) || TextUtils.isEmpty(txtPassword)){
                     Toast.makeText(RegisterActivity.this, "Please input all Fields", Toast.LENGTH_SHORT).show();
                 }
+                else {
+                    Toast.makeText(RegisterActivity.this, "Email: "+ txtEmail +" Password: "+txtPassword, Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
