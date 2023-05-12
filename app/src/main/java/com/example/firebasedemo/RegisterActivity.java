@@ -49,7 +49,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
     public void registerUser(String email, String password) {
         auth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                .addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
@@ -70,7 +70,8 @@ public class RegisterActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // User login successful, navigate to main activity
-                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            Toast.makeText(RegisterActivity.this,"Registration Successful!", Toast.LENGTH_SHORT);
+                            Intent intent = new Intent(getApplicationContext(), StartActivity.class);
                             startActivity(intent);
                             finish();
                         } else {
