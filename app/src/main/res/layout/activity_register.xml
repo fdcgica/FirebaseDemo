@@ -1,43 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="12dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RegisterActivity"
-    android:padding="10dp">
+    tools:context=".RegisterActivity">
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:src="@drawable/instagram"/>
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/emailEt"
+        android:background="@drawable/edit_text_background"
+        android:layout_marginTop="15dp"
+        android:hint="Username"
+        android:padding="10dp"
+        android:id="@+id/username"/>
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edit_text_background"
+        android:layout_marginTop="15dp"
+        android:hint="Name"
+        android:padding="10dp"
+        android:id="@+id/name"/>
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edit_text_background"
+        android:layout_marginTop="15dp"
         android:hint="Email"
-        android:textSize="20dp"
-        android:gravity="left"
-        android:inputType="textEmailAddress"
-        android:layout_marginTop="200dp">
-    </EditText>
-
+        android:padding="10dp"
+        android:id="@+id/email"/>
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/passwordEt"
-        android:layout_below="@+id/emailEt"
-        android:hint="Password"
+        android:background="@drawable/edit_text_background"
+        android:layout_marginTop="15dp"
         android:inputType="textPassword"
-        android:textSize="20dp"
-        android:maxLines="1"
-        android:gravity="left"
-        android:layout_marginTop="100dp">
-    </EditText>
-
+        android:hint="Password"
+        android:padding="10dp"
+        android:id="@+id/password"/>
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/registerSubmit"
-        android:layout_below="@+id/passwordEt"
-        android:layout_marginTop="100dp"
+        android:background="@drawable/button_background"
+        android:layout_marginTop="15dp"
         android:text="Register"
-        android:textColor="@color/white"
-        android:background="@color/black"></Button>
-</RelativeLayout>
+        android:padding="10dp"
+        android:id="@+id/register"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Already a user? Login"
+        android:layout_marginTop="15dp"
+        android:id="@+id/login_user"/>
+</LinearLayout>

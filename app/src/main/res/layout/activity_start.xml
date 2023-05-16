@@ -6,50 +6,41 @@
     android:layout_height="match_parent"
     tools:context=".StartActivity">
 
-   <LinearLayout
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:id="@+id/buttons_layout"
-       android:orientation="vertical"
-       android:gravity="center"
-       android:layout_alignParentBottom="true">
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/instagramicon"
+        android:layout_centerInParent="true"
+        android:id="@+id/icon_image"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerInParent="true"
+        android:padding="10dp"
+        android:id="@+id/linear_layout">
 
-       <LinearLayout
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           >
-           <Button
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:id="@+id/registerButton"
-               android:textSize="16sp"
-               android:padding="10dp"
-               android:layout_margin="10dp"
-               android:text="Register"
-               android:textColor="@color/white"
-               android:background="@color/black">
-           </Button>
-       </LinearLayout>
-       <LinearLayout
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           >
-           <Button
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:id="@+id/loginButton"
-               android:textSize="16sp"
-               android:padding="10dp"
-               android:layout_margin="10dp"
-               android:text="Login"
-               android:textColor="@color/white"
-               android:background="@color/black">
-           </Button>
-       </LinearLayout>
-
-   </LinearLayout>
-
-
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:src="@drawable/instagram"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/button_background"
+            android:text="Login"
+            android:textAllCaps="false"
+            android:id="@+id/loginBtn"
+            android:layout_marginBottom="10dp"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/button_background"
+            android:text="Register"
+            android:textAllCaps="false"
+            android:id="@+id/registerBtn"/>
+        
+    </LinearLayout>
 
 
 </RelativeLayout>

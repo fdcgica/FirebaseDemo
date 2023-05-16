@@ -1,13 +1,14 @@
 {
   "project_info": {
     "project_number": "935599337509",
+    "firebase_url": "https://fir-demo-28841-default-rtdb.asia-southeast1.firebasedatabase.app",
     "project_id": "fir-demo-28841",
     "storage_bucket": "fir-demo-28841.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:935599337509:android:91f305ffd00a32f860cfcc",
+        "mobilesdk_app_id": "1:935599337509:android:70d3afab004cf81360cfcc",
         "android_client_info": {
           "package_name": "com.example.firebasedemo"
         }
