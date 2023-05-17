@@ -3,6 +3,7 @@ package com.example.firebasedemo;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -27,6 +28,8 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText username,name,email,password;
     private Button register;
     private TextView loginUser;
+    ProgressDialog pd;
+
     private DatabaseReference mRootRef;
     private FirebaseAuth mAuth;
 
@@ -44,6 +47,8 @@ public class RegisterActivity extends AppCompatActivity {
 
         mRootRef = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
+
+        pd = new ProgressDialog(this);
 
         loginUser.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,6 +77,8 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
     private void registerUser(String username,String name, String email, String password){
+        pd.setMessage("Please Wait");
+        pd.show();
         mAuth.createUserWithEmailAndPassword(email,password).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
             @Override
             public void onSuccess(AuthResult authResult) {
@@ -86,6 +93,7 @@ public class RegisterActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if(task.isSuccessful()){
+                            pd.dismiss();
                             Toast.makeText(RegisterActivity.this, "Successfully Registered", Toast.LENGTH_SHORT).show();
                            Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -98,6 +106,7 @@ public class RegisterActivity extends AppCompatActivity {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
+                pd.dismiss();
                 Toast.makeText(RegisterActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
