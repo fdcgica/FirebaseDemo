@@ -7,23 +7,25 @@
     android:id="@+id/drawer_layout"
     tools:context=".MainActivity">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:id="@+id/linear_layout"
+        android:orientation="vertical">
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/toolbar_container">
 
-            <androidx.appcompat.widget.Toolbar
+            <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="?android:attr/colorPrimary"
+                android:background="@color/colorBlack"
                 android:elevation="4dp"
-                android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-                app:titleTextColor="@color/colorWhite" />
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+                app:titleTextColor="@color/netflix_red"/>
 
         </com.google.android.material.appbar.AppBarLayout>
 
@@ -31,18 +33,19 @@
             android:id="@+id/frame_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@color/colorBlack"
             android:layout_below="@id/toolbar_container" />
 
-    </RelativeLayout>
+    </LinearLayout>
 
     <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        app:headerLayout="@layout/header"
         android:fitsSystemWindows="true"
+        android:layout_gravity="start"
+        app:headerLayout="@layout/header"
         app:menu="@menu/main_menu"
-        android:id="@+id/nav_view"
-        android:layout_gravity="start"/>
+        app:navigationIconTint="@color/colorWhite"/>
 
-    
 </androidx.drawerlayout.widget.DrawerLayout>

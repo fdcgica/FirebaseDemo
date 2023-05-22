@@ -7,49 +7,76 @@
     android:padding="12dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorBlack"
     tools:context=".RegisterActivity">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Login"
+        android:text="@string/sign_in"
         android:textSize="45sp"
         android:textStyle="bold"
-        android:gravity="center"/>
-    <EditText
+        android:textColor="@color/colorWhite"
+        android:layout_marginStart="10dp"
+        android:gravity="left"/>
+
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/edit_text_background"
-        android:layout_marginTop="15dp"
-        android:textColor="@color/colorBlack"
-        android:hint="Email"
-        android:textColorHint="@color/colorBlack"
-        android:padding="10dp"
-        android:id="@+id/login_email"/>
-    <EditText
+        android:textColorHint="@color/netflix_grey"
+        app:boxStrokeErrorColor="@color/netflix_red"
+        app:startIconDrawable="@drawable/ic_email"
+        app:boxStrokeColor="@color/netflix_grey"
+        android:paddingBottom="10dp"
+        android:hint="@string/email"
+        app:endIconMode="clear_text">
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/login_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/edit_text_background"
-        android:layout_marginTop="15dp"
-        android:inputType="textPassword"
-        android:hint="Password"
-        android:textColorHint="@color/colorBlack"
-        android:textColor="@color/colorBlack"
-        android:padding="10dp"
-        android:id="@+id/login_password"/>
+        android:inputType="textEmailAddress"
+        app:errorTextColor="@color/netflix_red"
+        android:textColor="@color/colorWhite"
+        />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColorHint="@color/netflix_grey"
+        app:boxStrokeErrorColor="@color/netflix_red"
+        app:boxStrokeColor="@color/netflix_grey"
+        app:startIconDrawable="@drawable/ic_password"
+        android:hint="@string/password"
+        app:endIconMode="password_toggle">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/login_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:errorTextColor="@color/netflix_red"
+            android:inputType="textPassword"
+            android:textColor="@color/colorWhite"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/button_background"
         android:layout_marginTop="15dp"
-        android:textColor="@color/colorBlack"
-        android:text="Login"
+        android:textColor="@color/colorWhite"
+        app:backgroundTint="@color/netflix_red"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:text="@string/sign_in"
         android:padding="10dp"
         android:id="@+id/login_btn"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="No account? Register here"
+        android:text="@string/sign_up_here"
+        android:textColor="@color/colorWhite"
         android:layout_marginTop="15dp"
         android:id="@+id/register_user"/>
 </LinearLayout>

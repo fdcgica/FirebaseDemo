@@ -2,4 +2,16 @@
     <string name="app_name">Expense Tracker App</string>
     <string name="open">Open Navigation Drawer</string>
     <string name="close">Close Navigation Drawer</string>
+
+    <string name="sign_in">Sign In</string>
+    <string name="sign_up">Sign Up</string>
+
+    <string name="sign_up_here">No account? Sign Up</string>
+    <string name="sign_in_here">Already a user? Sign In</string>
+
+
+    <string name="name">Name</string>
+    <string name="user_name">User name</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
 </resources>

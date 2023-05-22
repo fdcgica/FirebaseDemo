@@ -5,4 +5,9 @@
     <color name="colorAccent">#c2bdbf</color>
     <color name="colorBlack">#000000</color>
     <color name="colorWhite">#ffffff</color>
+
+    <color name="netflix_red">#db0000</color>
+    <color name="netflix_grey">#564d4d</color>
+    <color name="netflix_maroon">#831010</color>
+    <color name="netflix_text_bg">#333</color>
 </resources>

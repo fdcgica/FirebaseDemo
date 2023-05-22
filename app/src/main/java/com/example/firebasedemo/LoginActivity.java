@@ -16,16 +16,17 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private EditText mEmail, mPassword;
     private TextView mUserRegister;
     private Button mLogin;
-    FirebaseAuth mAuth;
-    ProgressDialog pd;
+    private FirebaseAuth mAuth;
+    private ProgressDialog pd;
+    private TextInputEditText mEmail,mPassword;
 
 
     @Override
@@ -59,8 +60,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 }
                 break;
             case R.id.register_user:
-                pd.setMessage("Please Wait");
-                pd.show();
                 startActivity(new Intent(LoginActivity.this, RegisterActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP));
                 finish();
                 break;
