@@ -21,7 +21,9 @@
         android:layout_height="wrap_content"
         android:background="@drawable/edit_text_background"
         android:layout_marginTop="15dp"
+        android:textColor="@color/colorBlack"
         android:hint="Email"
+        android:textColorHint="@color/colorBlack"
         android:padding="10dp"
         android:id="@+id/login_email"/>
     <EditText
@@ -31,6 +33,8 @@
         android:layout_marginTop="15dp"
         android:inputType="textPassword"
         android:hint="Password"
+        android:textColorHint="@color/colorBlack"
+        android:textColor="@color/colorBlack"
         android:padding="10dp"
         android:id="@+id/login_password"/>
     <Button
@@ -38,6 +42,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/button_background"
         android:layout_marginTop="15dp"
+        android:textColor="@color/colorBlack"
         android:text="Login"
         android:padding="10dp"
         android:id="@+id/login_btn"/>

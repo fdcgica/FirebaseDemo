@@ -9,6 +9,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -87,17 +89,17 @@ public class MainActivity extends AppCompatActivity {
                     }
                     case R.id.facebook:
                     {
-                        Toast.makeText(MainActivity.this, "Facebook Selected", Toast.LENGTH_SHORT).show();
+                        openFacebook();
                         break;
                     }
                     case R.id.instagram:
                     {
-                        Toast.makeText(MainActivity.this, "Instagram Selected", Toast.LENGTH_SHORT).show();
+                        openInstagram();
                         break;
                     }
                     case R.id.linkedin:
                     {
-                        Toast.makeText(MainActivity.this, "Linkedin Selected", Toast.LENGTH_SHORT).show();
+                        openLinkedin();
                         break;
                     }
                 }
@@ -126,6 +128,56 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void openFacebook(){
+        String facebookUrl = "https://www.facebook.com/FortyDegreesCelsiusInc";
+
+        try {
+            // Check if the Facebook app is installed
+            getPackageManager().getPackageInfo("com.facebook.katana", 0);
+            // Facebook app is present, open it
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("fb://facewebmodal/f?href=" + facebookUrl));
+            startActivity(intent);
+        } catch (Exception e) {
+            // Facebook app is not installed, open in the mobile browser
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(facebookUrl));
+            startActivity(intent);
+        }
+    }
+
+    private void openInstagram(){
+        String instagramUrl = "https://www.instagram.com/giiiiics/";
+
+        try {
+            // Check if the Instagram app is installed
+            getPackageManager().getPackageInfo("com.instagram.android", 0);
+            // Instagram app is present, open it
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://instagram.com/_u/" + instagramUrl));
+            intent.setPackage("com.instagram.android");
+            startActivity(intent);
+        } catch (PackageManager.NameNotFoundException e) {
+            // Instagram app is not installed, open in the mobile browser
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(instagramUrl));
+            startActivity(intent);
+        }
+    }
+
+    private void openLinkedin(){
+         String linkedInUrl = "https://www.linkedin.com/company/forty-degrees-celsius-inc/";
+
+        try {
+            // Check if the LinkedIn app is installed
+            getPackageManager().getPackageInfo("com.linkedin.android", 0);
+            // LinkedIn app is present, open it
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("linkedin://profile/"));
+            intent.setPackage("com.linkedin.android");
+            startActivity(intent);
+        } catch (PackageManager.NameNotFoundException e) {
+            // LinkedIn app is not installed, open in the mobile browser
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(linkedInUrl));
+            startActivity(intent);
+        }
     }
 
     @Override
