@@ -1,12 +1,14 @@
-package com.example.firebasedemo;
+package com.example.firebasedemo.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -20,9 +22,11 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.firebasedemo.Fragments.ForecastsFragment;
 import com.example.firebasedemo.Fragments.HomeFragment;
 import com.example.firebasedemo.Fragments.UserProfileFragment;
 import com.example.firebasedemo.Fragments.UserSettingsFragment;
+import com.example.firebasedemo.R;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -43,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private UserProfileFragment userProfileFragment;
     private UserSettingsFragment userSettingsFragment;
     private HomeFragment homeFragment;
-
+    private ForecastsFragment forecastsFragment;
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if(drawerToggle.onOptionsItemSelected(item)){
@@ -64,13 +68,18 @@ public class MainActivity extends AppCompatActivity {
         progressDialog = new ProgressDialog(this);
         //Frame Container
         frameContainer = findViewById(R.id.frame_container);
+        //Fragments
         userProfileFragment = new UserProfileFragment();
         userSettingsFragment = new UserSettingsFragment();
         homeFragment = new HomeFragment();
+        forecastsFragment = new ForecastsFragment();
+
         getSupportFragmentManager().beginTransaction().replace(R.id.frame_container,homeFragment).commit();
         //Toolbar
         androidx.appcompat.widget.Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("Home");
         setSupportActionBar(toolbar);
+
         //Drawer
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
@@ -91,18 +100,19 @@ public class MainActivity extends AppCompatActivity {
                         drawerLayout.closeDrawer(GravityCompat.START);
                         break;
                     }
+                    case R.id.forecasts:{
+                        getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, forecastsFragment).commit();
+                        drawerLayout.closeDrawer(GravityCompat.START);
+                        break;
+                    }
                     case R.id.profile:
                     {
-//                        Toast.makeText(MainActivity.this, "Profile Selected", Toast.LENGTH_SHORT).show();
-//                        break;
                         getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, userProfileFragment).commit();
                         drawerLayout.closeDrawer(GravityCompat.START);
                         break;
                     }
                     case R.id.settings:
                     {
-//                        Toast.makeText(MainActivity.this, "Settings Selected", Toast.LENGTH_SHORT).show();
-//                        break;
                         getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, userSettingsFragment).commit();
                         drawerLayout.closeDrawer(GravityCompat.START);
                         break;

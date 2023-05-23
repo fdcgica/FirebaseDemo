@@ -1,116 +1,130 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:gravity="center"
-    android:padding="12dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBlack"
-    tools:context=".RegisterActivity">
+    android:background="@color/colorBlack">
 
-    <TextView
+    <LinearLayout
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="12dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/sign_up"
-        android:layout_marginStart="10dp"
-        android:textSize="45sp"
-        android:textStyle="bold"
-        android:textColor="@color/colorWhite"
-        android:gravity="left"/>
+        android:layout_height="match_parent"
+        android:background="@color/colorBlack"
+        tools:context=".Activities.RegisterActivity"
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColorHint="@color/netflix_grey"
-        app:boxStrokeErrorColor="@color/netflix_red"
-        app:boxStrokeColor="@color/netflix_grey"
-        android:paddingBottom="10dp"
-        android:hint="@string/user_name"
-        app:endIconMode="clear_text">
+        android:layout_gravity="center">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/username"
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text"
-            app:errorTextColor="@color/netflix_red"
+            android:text="@string/sign_up"
+            android:layout_marginStart="10dp"
+            android:textSize="45sp"
+            android:textStyle="bold"
             android:textColor="@color/colorWhite"
-            />
-    </com.google.android.material.textfield.TextInputLayout>
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColorHint="@color/netflix_grey"
-        app:boxStrokeErrorColor="@color/netflix_red"
-        app:boxStrokeColor="@color/netflix_grey"
-        android:paddingBottom="10dp"
-        android:hint="@string/name"
-        app:endIconMode="clear_text">
+            android:gravity="left"/>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/name"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text"
-            app:errorTextColor="@color/netflix_red"
-            android:textColor="@color/colorWhite"
-            />
-    </com.google.android.material.textfield.TextInputLayout>
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColorHint="@color/netflix_grey"
-        app:boxStrokeErrorColor="@color/netflix_red"
-        app:boxStrokeColor="@color/netflix_grey"
-        android:paddingBottom="10dp"
-        android:hint="@string/email"
-        app:endIconMode="clear_text">
+            app:hintTextColor="@color/netflix_grey"
+            app:boxStrokeErrorColor="@color/netflix_red"
+            app:boxStrokeColor="@color/netflix_grey"
+            android:paddingBottom="10dp"
+            android:hint="@string/user_name"
+            app:endIconMode="clear_text">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/email"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                app:errorTextColor="@color/netflix_red"
+                android:textColor="@color/colorWhite"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textEmailAddress"
-            app:errorTextColor="@color/netflix_red"
-            android:textColor="@color/colorWhite"
-            />
-    </com.google.android.material.textfield.TextInputLayout>
+            app:hintTextColor="@color/netflix_grey"
+            app:boxStrokeErrorColor="@color/netflix_red"
+            app:boxStrokeColor="@color/netflix_grey"
+            android:paddingBottom="10dp"
+            android:hint="@string/name"
+            app:endIconMode="clear_text">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColorHint="@color/netflix_grey"
-        app:boxStrokeErrorColor="@color/netflix_red"
-        app:boxStrokeColor="@color/netflix_grey"
-        android:hint="@string/password"
-        app:endIconMode="password_toggle">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                app:errorTextColor="@color/netflix_red"
+                android:textColor="@color/colorWhite"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/password"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:errorTextColor="@color/netflix_red"
-            android:inputType="textPassword"
+            app:hintTextColor="@color/netflix_grey"
+            app:boxStrokeErrorColor="@color/netflix_red"
+            app:boxStrokeColor="@color/netflix_grey"
+            android:paddingBottom="10dp"
+            android:hint="@string/email"
+            app:endIconMode="clear_text">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
+                app:errorTextColor="@color/netflix_red"
+                android:textColor="@color/colorWhite"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:hintTextColor="@color/netflix_grey"
+            app:boxStrokeErrorColor="@color/netflix_red"
+            app:boxStrokeColor="@color/netflix_grey"
+            android:hint="@string/password"
+            app:endIconMode="password_toggle">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:errorTextColor="@color/netflix_red"
+                android:inputType="textPassword"
+                android:textColor="@color/colorWhite"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_background"
+            android:layout_marginTop="15dp"
             android:textColor="@color/colorWhite"
-            />
-    </com.google.android.material.textfield.TextInputLayout>
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/button_background"
-        android:layout_marginTop="15dp"
-        android:textColor="@color/colorWhite"
-        app:backgroundTint="@color/netflix_red"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:text="@string/sign_up"
-        android:padding="10dp"
-        android:id="@+id/register"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Already a user? Login"
-        android:layout_marginTop="15dp"
-        android:id="@+id/login_user"/>
-</LinearLayout>
+            app:backgroundTint="@color/netflix_red"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:text="@string/sign_up"
+            android:padding="10dp"
+            android:id="@+id/register"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Already a user? Login"
+            android:layout_marginTop="15dp"
+            android:id="@+id/login_user"/>
+
+    </LinearLayout>
+
+</ScrollView>

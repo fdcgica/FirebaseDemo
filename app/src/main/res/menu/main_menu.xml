@@ -5,6 +5,15 @@
             android:icon="@drawable/ic_home"
             android:title="Home"/>
     </group>
+    <item android:title="Weather">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item android:id="@+id/forecasts"
+                    android:icon="@drawable/ic_forecasts"
+                    android:title="Forecasts"/>
+            </group>
+        </menu>
+    </item>
     <item android:title="Profile">
         <menu>
             <group android:checkableBehavior="single">
