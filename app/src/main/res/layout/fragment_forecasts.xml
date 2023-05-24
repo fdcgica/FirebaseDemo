@@ -7,22 +7,15 @@
     tools:context=".Fragments.ForecastsFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <androidx.recyclerview.widget.RecyclerView
+    <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/forecast_recycler_view"/>
+        android:id="@+id/myListView"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_gravity="bottom">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/lat_txt"
-            android:text="Lat"
-            android:textSize="23sp"/>
         <Button
             android:id="@+id/forecast_button"
             android:layout_width="match_parent"
