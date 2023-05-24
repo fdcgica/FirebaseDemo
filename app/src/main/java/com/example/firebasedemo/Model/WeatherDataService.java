@@ -43,14 +43,17 @@ public class WeatherDataService {
                             JSONObject dayMain = row.optJSONObject("main");
                             JSONArray dayWeather = row.optJSONArray("weather");
 
-//                            for(int i = 0; i < dayWeather.length(); i++) {
-//
-//                            }
-                            reportDay.setWeatherMain(dayWeather.optString(1));
-                            reportDay.setWeatherMain(dayWeather.optString(2));
-                            reportDay.setWeatherMain(dayWeather.optString(3));
+                            reportDay.setDateTime(row.optString("dt_txt"));
 
-                            reportDay.setDateTime(dayMain.optString("dt_txt"));
+                            for(int i = 0; i < dayWeather.length(); i++) {
+                                JSONObject getWeatherData = dayWeather.optJSONObject(i);
+
+                                reportDay.setWeatherMain(getWeatherData.optString("main"));
+                                reportDay.setDescription(getWeatherData.optString("description"));
+                                reportDay.setWeatherIcon(getWeatherData.optString("icon"));
+
+                            }
+
                             reportDay.setTemp(dayMain.optLong("temp"));
                             reportDay.setTempMin(dayMain.optLong("temp_min"));
                             reportDay.setTempMax(dayMain.optLong("temp_max"));

@@ -19,6 +19,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Looper;
 import android.util.Log;
@@ -36,6 +38,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.example.firebasedemo.Adapters.WeatherItemAdapter;
 import com.example.firebasedemo.Interface.WeatherAPICallback;
 import com.example.firebasedemo.Model.WeatherDataService;
 import com.example.firebasedemo.Model.WeatherForecastModel;
@@ -75,9 +78,10 @@ public class ForecastsFragment extends Fragment  {
     private String mParam1;
     private String mParam2;
     private TextView mLat;
-    private Button forcastBtn;
+    private Button forecastBtn;
     private LocationRequest locationRequest;
-    private ListView mListview;
+    private RecyclerView myRecyclerView;
+    private WeatherItemAdapter mWeatherAdapter;
     ProgressDialog pd;
 
     public ForecastsFragment() {
@@ -105,7 +109,6 @@ public class ForecastsFragment extends Fragment  {
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
-
         locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         locationRequest.setInterval(5000);
@@ -123,10 +126,11 @@ public class ForecastsFragment extends Fragment  {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_forecasts, container, false);
-        mListview = view.findViewById(R.id.myListView);
-        forcastBtn = view.findViewById(R.id.forecast_button);
+
+        forecastBtn = view.findViewById(R.id.forecast_button);
         pd = new ProgressDialog(getActivity());
-        forcastBtn.setOnClickListener(new View.OnClickListener() {
+        myRecyclerView = view.findViewById(R.id.weather_recyclerView);
+        forecastBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getCurrentLocation();
@@ -165,8 +169,13 @@ public class ForecastsFragment extends Fragment  {
                                         weatherDataService.getForecast(latitude, longitude, new WeatherAPICallback() {
                                             @Override
                                             public void onSuccess(List<WeatherForecastModel> weatherForecastModels) {
-                                                ArrayAdapter arrayAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, weatherForecastModels);
-                                                mListview.setAdapter(arrayAdapter);
+
+
+                                                //WeatherItemAdapter adapter = new WeatherItemAdapter(getActivity(),weatherForecastModels);
+                                                mWeatherAdapter = new WeatherItemAdapter(getActivity(), weatherForecastModels);
+                                                myRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                                                myRecyclerView.setHasFixedSize(true);
+                                                myRecyclerView.setAdapter(mWeatherAdapter);
                                                 pd.dismiss();
                                             }
 
