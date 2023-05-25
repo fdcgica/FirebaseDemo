@@ -15,7 +15,7 @@
             android:gravity="center"
             android:padding="12dp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:background="@color/colorBlack"
             android:layout_gravity="center">
             <ImageView
@@ -24,6 +24,29 @@
                 android:id="@+id/profile_image"
                 android:background="@color/colorWhite"
                 android:src="@drawable/ic_profile"/>
+            <Button
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button_background"
+                android:layout_marginTop="15dp"
+                android:textColor="@color/colorWhite"
+                app:backgroundTint="@color/netflix_red"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:text="@string/capture"
+                android:padding="10dp"
+                android:id="@+id/capture"/>
+            <Button
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button_background"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="10dp"
+                android:textColor="@color/colorWhite"
+                app:backgroundTint="@color/netflix_red"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:text="@string/upload"
+                android:padding="10dp"
+                android:id="@+id/upload"/>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
@@ -57,6 +80,26 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    app:errorTextColor="@color/netflix_red"
+                    android:textColor="@color/colorWhite"
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:hintTextColor="@color/netflix_grey"
+                app:boxStrokeErrorColor="@color/netflix_red"
+                app:boxStrokeColor="@color/netflix_grey"
+                android:paddingBottom="10dp"
+                android:hint="@string/email"
+                app:endIconMode="clear_text">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="text"

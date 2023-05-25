@@ -45,10 +45,6 @@ public class RegisterActivity extends AppCompatActivity {
         password = findViewById(R.id.password);
         register = findViewById(R.id.register);
         loginUser = findViewById(R.id.login_user);
-
-        mRootRef = FirebaseDatabase.getInstance().getReference();
-        mAuth = FirebaseAuth.getInstance();
-
         pd = new ProgressDialog(this);
 
         loginUser.setOnClickListener(new View.OnClickListener() {
@@ -80,6 +76,8 @@ public class RegisterActivity extends AppCompatActivity {
     private void registerUser(String username,String name, String email, String password){
         pd.setMessage("Please Wait");
         pd.show();
+        mRootRef = FirebaseDatabase.getInstance().getReference();
+        mAuth = FirebaseAuth.getInstance();
         mAuth.createUserWithEmailAndPassword(email,password).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
             @Override
             public void onSuccess(AuthResult authResult) {
