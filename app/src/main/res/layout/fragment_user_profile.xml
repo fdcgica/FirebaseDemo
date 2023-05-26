@@ -21,9 +21,11 @@
             <ImageView
                 android:layout_width="200dp"
                 android:layout_height="200dp"
+                android:scaleType="centerCrop"
                 android:id="@+id/profile_image"
                 android:background="@color/colorWhite"
-                android:src="@drawable/ic_profile"/>
+                android:src="@drawable/ic_profile_image"
+                android:visibility="invisible"/>
             <Button
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
@@ -63,7 +65,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="text"
-                    app:errorTextColor="@color/netflix_red"
                     android:textColor="@color/colorWhite"
                     />
             </com.google.android.material.textfield.TextInputLayout>
@@ -83,7 +84,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="text"
-                    app:errorTextColor="@color/netflix_red"
                     android:textColor="@color/colorWhite"
                     />
             </com.google.android.material.textfield.TextInputLayout>
@@ -103,7 +103,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="text"
-                    app:errorTextColor="@color/netflix_red"
                     android:textColor="@color/colorWhite"
                     />
             </com.google.android.material.textfield.TextInputLayout>

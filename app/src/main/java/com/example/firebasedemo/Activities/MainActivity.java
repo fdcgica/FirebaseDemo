@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +36,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
@@ -42,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView navigationView;
     private ActionBarDrawerToggle drawerToggle;
     private TextView headerName, headerEmail;
+    private ImageView headerImage;
     private ProgressDialog progressDialog;
     private Context context;
     private UserProfileFragment userProfileFragment;
@@ -86,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
         View headerView = navigationView.getHeaderView(0);
         headerName = headerView.findViewById(R.id.header_name);
         headerEmail = headerView.findViewById(R.id.header_email);
+        headerImage = headerView.findViewById(R.id.header_image);
         drawerToggle = new ActionBarDrawerToggle(MainActivity.this,drawerLayout, R.string.open, R.string.close);
         drawerLayout.addDrawerListener(drawerToggle);
         drawerToggle.syncState();
@@ -169,8 +173,16 @@ public class MainActivity extends AppCompatActivity {
                 if (snapshot.exists()){
                     String name = snapshot.child("name").getValue().toString();
                     String email = snapshot.child("email").getValue().toString();
+                    String uri = snapshot.child("imageUrl").getValue().toString();
                     headerName.setText(name);
                     headerEmail.setText(email);
+                    if(uri.equals("")){
+                    headerImage.setVisibility(View.VISIBLE);
+                    }
+                    else{
+                        Picasso.get().load(uri).into(headerImage);
+                    }
+
                 }
             }
             @Override

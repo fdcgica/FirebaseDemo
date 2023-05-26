@@ -42,7 +42,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"
-                app:errorTextColor="@color/netflix_red"
                 android:textColor="@color/colorWhite"
                 />
         </com.google.android.material.textfield.TextInputLayout>
@@ -62,7 +61,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"
-                app:errorTextColor="@color/netflix_red"
                 android:textColor="@color/colorWhite"
                 />
         </com.google.android.material.textfield.TextInputLayout>
@@ -82,7 +80,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
-                app:errorTextColor="@color/netflix_red"
                 android:textColor="@color/colorWhite"
                 />
         </com.google.android.material.textfield.TextInputLayout>
@@ -100,7 +97,6 @@
                 android:id="@+id/password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:errorTextColor="@color/netflix_red"
                 android:inputType="textPassword"
                 android:textColor="@color/colorWhite"
                 />

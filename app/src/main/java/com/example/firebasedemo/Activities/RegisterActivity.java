@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.firebasedemo.Model.Users;
 import com.example.firebasedemo.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -81,14 +82,9 @@ public class RegisterActivity extends AppCompatActivity {
         mAuth.createUserWithEmailAndPassword(email,password).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
             @Override
             public void onSuccess(AuthResult authResult) {
-
-                HashMap<String, Object> map = new HashMap<>();
-                map.put("name", name);
-                map.put("email", email);
-                map.put("username", username);
-                map.put("id", mAuth.getCurrentUser().getUid());
-
-                mRootRef.child("Users").child(mAuth.getCurrentUser().getUid()).setValue(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+                String userID = mAuth.getCurrentUser().getUid();
+                Users users = new Users(username, name, email, password, "", userID);
+                mRootRef.child("Users").child(mAuth.getCurrentUser().getUid()).setValue(users).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if(task.isSuccessful()){
