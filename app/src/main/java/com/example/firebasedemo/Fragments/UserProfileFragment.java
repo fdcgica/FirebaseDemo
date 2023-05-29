@@ -2,14 +2,23 @@ package com.example.firebasedemo.Fragments;
 
 import static android.app.Activity.RESULT_OK;
 
+import android.Manifest;
+import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
@@ -17,6 +26,7 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -24,6 +34,7 @@ import android.widget.Toast;
 
 import com.example.firebasedemo.Model.Users;
 import com.example.firebasedemo.R;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
@@ -35,10 +46,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -51,6 +65,8 @@ public class UserProfileFragment extends Fragment implements View.OnClickListene
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    public static final int CAMERA_PERMISSION_CODE = 1;
+    public static final int CAMERA_REQUEST_CODE = 11;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -60,12 +76,14 @@ public class UserProfileFragment extends Fragment implements View.OnClickListene
     private StorageReference mStorageRef;
     private DatabaseReference mDatabaseRef;
     private FirebaseAuth mAuth;
-    private TextInputEditText userName,name,email;
-    private static final int REQUEST_IMAGE_SELECT = 1;
-    private static final int REQUEST_IMAGE_CAPTURE = 2;
+    private TextInputEditText userName, name, email;
     private ImageView profileImage;
     private Uri imageUri;
+    private byte[] imageDataUri;
     private Context context;
+    private ProgressDialog pd;
+    private ActivityResultLauncher<Intent> imagePickerLauncher, cameraLauncher;
+
     public UserProfileFragment() {
         // Required empty public constructor
     }
@@ -116,6 +134,7 @@ public class UserProfileFragment extends Fragment implements View.OnClickListene
         name = view.findViewById(R.id.name);
         email = view.findViewById(R.id.email);
         context = getContext();
+        pd = new ProgressDialog(context);
 
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
@@ -123,6 +142,55 @@ public class UserProfileFragment extends Fragment implements View.OnClickListene
         mStorageRef = FirebaseStorage.getInstance().getReference("uploads");
         mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Users");
         DatabaseReference currentUserRef = mDatabaseRef.child(uid);
+
+        imagePickerLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        pd.setMessage("Please wait");
+                        pd.show();
+                        if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                            Intent data = result.getData();
+                            imageUri = data.getData();
+
+                            Picasso.get().load(imageUri).into(profileImage);
+                            profileImage.setVisibility(View.VISIBLE);
+                            Toast.makeText(getContext(), "Image added", Toast.LENGTH_SHORT).show();
+                            pd.dismiss();
+                        }
+                    }
+                });
+        cameraLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        pd.setMessage("Please wait");
+                        pd.show();
+                        imageUri = null;
+                        if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                            Intent data = result.getData();
+                            if (data != null && data.getExtras() != null) {
+                                Bitmap imageBitmap = (Bitmap) data.getExtras().get("data");
+                                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                                imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                                imageDataUri = baos.toByteArray();
+                                profileImage.setImageBitmap(imageBitmap);
+                                profileImage.setVisibility(View.VISIBLE);
+                                Toast.makeText(getContext(), "Image added", Toast.LENGTH_SHORT).show();
+                                pd.dismiss();
+                            } else if (data != null && data.getData() != null) {
+                                imageUri = data.getData();
+                                Picasso.get().load(imageUri).into(profileImage);
+                                profileImage.setVisibility(View.VISIBLE);
+                                Toast.makeText(getContext(), "Image added", Toast.LENGTH_SHORT).show();
+                                pd.dismiss();
+                            }
+                        } else {
+                            Toast.makeText(context, "Camera capture failed", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
 
         updateBtn.setOnClickListener(this);
         uploadBtn.setOnClickListener(this);
@@ -135,7 +203,7 @@ public class UserProfileFragment extends Fragment implements View.OnClickListene
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.update:
                 FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
                 FirebaseUser currentUser = firebaseAuth.getCurrentUser();
@@ -148,15 +216,124 @@ public class UserProfileFragment extends Fragment implements View.OnClickListene
                 openFile();
                 break;
             case R.id.capture:
-
+                requestCameraPermission();
                 break;
         }
     }
-    private void setData(DatabaseReference currentUserRef){
+
+    private void updateUser(DatabaseReference currentUserRef) {
+
+        pd.setMessage("Please Wait");
+        pd.show();
+        if (imageUri != null) {
+            StorageReference fileReference = mStorageRef.child(System.currentTimeMillis()
+                    + "." + getFileExtension(imageUri));
+
+            fileReference.putFile(imageUri)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            fileReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    String saveUri = uri.toString();
+                                    String userNameTxt = userName.getText().toString();
+                                    String nameTxt = name.getText().toString();
+                                    String iUri = saveUri;
+
+                                    Users users = new Users();
+                                    users.setUserName(userNameTxt);
+                                    users.setName(nameTxt);
+                                    users.setImageUrl(iUri);
+
+                                    Map<String, Object> updatedData = new HashMap<>();
+                                    updatedData.put("userName", users.getUserName());
+                                    updatedData.put("name", users.getName());
+                                    updatedData.put("imageUrl", users.getImageUrl());
+
+                                    currentUserRef.updateChildren(updatedData).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void unused) {
+                                            Toast.makeText(context, "Updated Successfully", Toast.LENGTH_SHORT).show();
+                                            setData(currentUserRef);
+                                            pd.dismiss();
+                                        }
+                                    });
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    pd.dismiss();
+                                }
+                            });
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                            pd.dismiss();
+                        }
+                    });
+
+        } else {
+            StorageReference fileReference = mStorageRef.child(System.currentTimeMillis()
+                    + ".jpg");
+            UploadTask uploadTask = fileReference.putBytes(imageDataUri);
+            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    fileReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            String saveUri = uri.toString();
+                            String userNameTxt = userName.getText().toString();
+                            String nameTxt = name.getText().toString();
+                            String iUri = saveUri;
+
+                            Users users = new Users();
+                            users.setUserName(userNameTxt);
+                            users.setName(nameTxt);
+                            users.setImageUrl(iUri);
+
+                            Map<String, Object> updatedData = new HashMap<>();
+                            updatedData.put("userName", users.getUserName());
+                            updatedData.put("name", users.getName());
+                            updatedData.put("imageUrl", users.getImageUrl());
+
+                            currentUserRef.updateChildren(updatedData).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                    Toast.makeText(context, "Updated Successfully", Toast.LENGTH_SHORT).show();
+                                    setData(currentUserRef);
+                                    pd.dismiss();
+                                }
+                            });
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                            pd.dismiss();
+                        }
+                    });
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    pd.dismiss();
+                }
+            });
+        }
+    }
+
+    private void setData(DatabaseReference currentUserRef) {
         currentUserRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists()){
+                if (snapshot.exists()) {
                     String userName_txt = snapshot.child("userName").getValue().toString();
                     String nameTxt = snapshot.child("name").getValue().toString();
                     String email_txt = snapshot.child("email").getValue().toString();
@@ -167,10 +344,10 @@ public class UserProfileFragment extends Fragment implements View.OnClickListene
                     email.setEnabled(false);
                     email.setTextColor(ContextCompat.getColor(context, R.color.netflix_grey));
 
-                    if(uri.equals("")){
+                    if (uri.equals(null)) {
                         profileImage.setVisibility(View.VISIBLE);
-                    }
-                    else{
+                    } else {
+                        profileImage.setVisibility(View.VISIBLE);
                         Picasso.get().load(uri).into(profileImage);
                     }
                 }
@@ -182,44 +359,28 @@ public class UserProfileFragment extends Fragment implements View.OnClickListene
             }
         });
     }
-    private void updateUser(DatabaseReference currentUserRef){
-        String userNameTxt = userName.getText().toString();
-        String nameTxt = name.getText().toString();
-        String iUri = imageUri.toString();
 
-        Users users = new Users();
-        users.setUserName(userNameTxt);
-        users.setName(nameTxt);
-        users.setImageUrl(iUri);
-
-        Map<String, Object> updatedData = new HashMap<>();
-        updatedData.put("userName",users.getUserName());
-        updatedData.put("name",users.getName());
-        updatedData.put("imageUrl",users.getImageUrl());
-
-        currentUserRef.updateChildren(updatedData).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                Toast.makeText(context,"Updated Successfully", Toast.LENGTH_SHORT).show();
-            }
-        });
+    private String getFileExtension(Uri uri) {
+        ContentResolver contentResolver = context.getContentResolver();
+        MimeTypeMap mime = MimeTypeMap.getSingleton();
+        return mime.getExtensionFromMimeType(contentResolver.getType(uri));
 
     }
-    private void openFile(){
+
+    private void openFile() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(intent,REQUEST_IMAGE_SELECT);
+        imagePickerLauncher.launch(intent);
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == REQUEST_IMAGE_SELECT && resultCode == RESULT_OK && data != null && data.getData() != null){
-            imageUri = data.getData();
-
-            Picasso.get().load(imageUri).into(profileImage);
-            profileImage.setVisibility(View.VISIBLE);
-            Toast.makeText(getContext(), "Image added", Toast.LENGTH_SHORT).show();
+    private void openCamera(){
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        cameraLauncher.launch(cameraIntent);
+    }
+    private void requestCameraPermission() {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_CODE);
+        } else {
+            openCamera();
         }
     }
 }
