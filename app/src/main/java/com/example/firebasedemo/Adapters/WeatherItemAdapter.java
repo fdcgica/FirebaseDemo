@@ -8,12 +8,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
+import com.example.firebasedemo.Fragments.ForecastsItemFragment;
 import com.example.firebasedemo.Model.WeatherForecastModel;
 import com.example.firebasedemo.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,9 +60,17 @@ public class WeatherItemAdapter extends RecyclerView.Adapter<WeatherItemAdapter.
         WeatherForecastModel currentModel = mWeathers.get(position);
         holder.weather_main.setText(currentModel.getWeatherMain());
         holder.weather_description.setText(currentModel.getDescription());
-        holder.temp.setText(String.valueOf(currentModel.getTemp()));
-        holder.temp_min.setText(String.valueOf(currentModel.getTempMin()));
-        holder.temp_max.setText(String.valueOf(currentModel.getTempMax()));
+        Picasso.get().load("https://openweathermap.org/img/wn/" + currentModel.getWeatherIcon() +".png").into(holder.weatherIcon);
+        holder.temp.setText(String.valueOf(currentModel.getTemp()) + R.string.celcius);
+        holder.temp_min.setText(String.valueOf(currentModel.getTempMin()) + R.string.celcius);
+        holder.temp_max.setText(String.valueOf(currentModel.getTempMax()) + R.string.celcius);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ForecastsItemFragment dialogFragment = ForecastsItemFragment.newInstance();
+                dialogFragment.show(((AppCompatActivity) mContext).getSupportFragmentManager(), "dialog_fragment");
+            }
+        });
     }
 
     @Override

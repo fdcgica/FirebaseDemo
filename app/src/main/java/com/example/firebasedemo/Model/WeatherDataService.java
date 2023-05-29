@@ -1,5 +1,7 @@
 package com.example.firebasedemo.Model;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.Context;
 import android.util.Log;
 
@@ -9,6 +11,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.firebasedemo.Interface.WeatherAPICallback;
 import com.example.firebasedemo.Singleton.MySingleton;
+import com.example.firebasedemo.Utils.FormatUtils;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -53,10 +56,25 @@ public class WeatherDataService {
                                 reportDay.setWeatherIcon(getWeatherData.optString("icon"));
 
                             }
+                            float kelvinTemp = dayMain.optLong("temp");
+                            float kelvinTempMin = dayMain.optLong("temp_min");
+                            float kelvinTempMax = dayMain.optLong("temp_max");
 
-                            reportDay.setTemp(dayMain.optLong("temp"));
-                            reportDay.setTempMin(dayMain.optLong("temp_min"));
-                            reportDay.setTempMax(dayMain.optLong("temp_max"));
+                            float celsiusTemp = FormatUtils.convertKelvinToCelsius(kelvinTemp);
+                            float celsiusTempMin = FormatUtils.convertKelvinToCelsius(kelvinTempMin);
+                            float celsiusTempMax = FormatUtils.convertKelvinToCelsius(kelvinTempMax);
+
+                            float formattedTemp = FormatUtils.formatFloatToTwoDecimalPlaces(celsiusTemp);
+                            float formattedTempMin = FormatUtils.formatFloatToTwoDecimalPlaces(celsiusTempMin);
+                            float formattedTempMax = FormatUtils.formatFloatToTwoDecimalPlaces(celsiusTempMax);
+                            Log.d(TAG, "wew: "+ formattedTemp);
+                            Log.d(TAG, "wew: "+ formattedTempMin);
+                            Log.d(TAG, "wew: "+ formattedTempMax);
+
+
+                            reportDay.setTemp(formattedTemp);
+                            reportDay.setTempMin(formattedTempMin);
+                            reportDay.setTempMax(formattedTempMax);
 
                             forecast.add(reportDay);
                         }

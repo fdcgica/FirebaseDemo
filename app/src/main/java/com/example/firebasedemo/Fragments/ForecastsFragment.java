@@ -18,6 +18,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -67,7 +68,7 @@ import java.util.List;
  * Use the {@link ForecastsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ForecastsFragment extends Fragment  {
+public class ForecastsFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -164,14 +165,10 @@ public class ForecastsFragment extends Fragment  {
                                         int index = locationResult.getLocations().size() - 1;
                                         double latitude = locationResult.getLocations().get(index).getLatitude();
                                         double longitude = locationResult.getLocations().get(index).getLongitude();
-
-                                        //mLat.setText("Latitude: "+ latitude + "\n" + "Longitude: "+ longitude);
                                         weatherDataService.getForecast(latitude, longitude, new WeatherAPICallback() {
                                             @Override
                                             public void onSuccess(List<WeatherForecastModel> weatherForecastModels) {
 
-
-                                                //WeatherItemAdapter adapter = new WeatherItemAdapter(getActivity(),weatherForecastModels);
                                                 mWeatherAdapter = new WeatherItemAdapter(getActivity(), weatherForecastModels);
                                                 myRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
                                                 myRecyclerView.setHasFixedSize(true);

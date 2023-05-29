@@ -13,8 +13,8 @@
         android:padding="8dp">
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:id="@+id/weather_icon"
             android:layout_alignParentEnd="true"/>
         <TextView
@@ -41,24 +41,21 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/weather_temp"
                 android:layout_gravity="start"
-                android:textSize="15sp"
-                android:text="°C"/>
+                android:textSize="15sp"/>
 
             <TextView
                 android:layout_width="130dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/weather_temp_min"
                 android:textSize="15sp"
-                android:layout_gravity="center"
-                android:text="°C"/>
+                android:layout_gravity="center"/>
 
             <TextView
                 android:layout_width="130dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/weather_temp_max"
                 android:textSize="15sp"
-                android:layout_gravity="end"
-                android:text="°C"/>
+                android:layout_gravity="end"/>
         </LinearLayout>
 
     </RelativeLayout>

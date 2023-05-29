@@ -11,6 +11,8 @@ import com.example.firebasedemo.Singleton.MySingleton;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.DecimalFormat;
+
 public class WeatherForecastModel {
 
     private String weatherIcon,weatherMain,description,dateTime;
