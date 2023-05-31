@@ -18,6 +18,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -54,7 +55,13 @@ public class MainActivity extends AppCompatActivity {
     private ForecastsFragment forecastsFragment;
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(drawerToggle.onOptionsItemSelected(item)){
+        if (drawerToggle.onOptionsItemSelected(item)) {
+            // Close keyboard if it's open
+            View view = getCurrentFocus();
+            if (view != null) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }
             return true;
         }
         return super.onOptionsItemSelected(item);

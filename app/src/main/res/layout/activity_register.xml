@@ -90,6 +90,25 @@
             app:hintTextColor="@color/netflix_grey"
             app:boxStrokeErrorColor="@color/netflix_red"
             app:boxStrokeColor="@color/netflix_grey"
+            android:paddingBottom="10dp"
+            android:hint="@string/mobile"
+            app:endIconMode="clear_text">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/mobile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:textColor="@color/colorWhite"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:hintTextColor="@color/netflix_grey"
+            app:boxStrokeErrorColor="@color/netflix_red"
+            app:boxStrokeColor="@color/netflix_grey"
             android:hint="@string/password"
             app:endIconMode="password_toggle">
 

@@ -50,6 +50,9 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -71,12 +74,11 @@ public class UserProfileFragment extends Fragment implements View.OnClickListene
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private TextView user_name_fragment;
     private Button uploadBtn, updateBtn, captureBtn;
     private StorageReference mStorageRef;
     private DatabaseReference mDatabaseRef;
     private FirebaseAuth mAuth;
-    private TextInputEditText userName, name, email;
+    private TextInputEditText userName, name, email, mobileNo;
     private ImageView profileImage;
     private Uri imageUri;
     private byte[] imageDataUri;
@@ -132,6 +134,7 @@ public class UserProfileFragment extends Fragment implements View.OnClickListene
         //Fields
         userName = view.findViewById(R.id.username);
         name = view.findViewById(R.id.name);
+        mobileNo = view.findViewById(R.id.mobile);
         email = view.findViewById(R.id.email);
         context = getContext();
         pd = new ProgressDialog(context);
@@ -225,6 +228,10 @@ public class UserProfileFragment extends Fragment implements View.OnClickListene
 
         pd.setMessage("Please Wait");
         pd.show();
+
+        String userNameTxt = userName.getText().toString();
+        String nameTxt = name.getText().toString();
+
         if (imageUri != null) {
             StorageReference fileReference = mStorageRef.child(System.currentTimeMillis()
                     + "." + getFileExtension(imageUri));
@@ -237,10 +244,7 @@ public class UserProfileFragment extends Fragment implements View.OnClickListene
                                 @Override
                                 public void onSuccess(Uri uri) {
                                     String saveUri = uri.toString();
-                                    String userNameTxt = userName.getText().toString();
-                                    String nameTxt = name.getText().toString();
                                     String iUri = saveUri;
-
                                     Users users = new Users();
                                     users.setUserName(userNameTxt);
                                     users.setName(nameTxt);
@@ -277,7 +281,8 @@ public class UserProfileFragment extends Fragment implements View.OnClickListene
                         }
                     });
 
-        } else {
+        }
+        else if (imageDataUri != null){
             StorageReference fileReference = mStorageRef.child(System.currentTimeMillis()
                     + ".jpg");
             UploadTask uploadTask = fileReference.putBytes(imageDataUri);
@@ -288,8 +293,6 @@ public class UserProfileFragment extends Fragment implements View.OnClickListene
                         @Override
                         public void onSuccess(Uri uri) {
                             String saveUri = uri.toString();
-                            String userNameTxt = userName.getText().toString();
-                            String nameTxt = name.getText().toString();
                             String iUri = saveUri;
 
                             Users users = new Users();
@@ -327,6 +330,25 @@ public class UserProfileFragment extends Fragment implements View.OnClickListene
                 }
             });
         }
+        else{
+
+            Users users = new Users();
+            users.setUserName(userNameTxt);
+            users.setName(nameTxt);
+
+            Map<String, Object> updatedData = new HashMap<>();
+            updatedData.put("userName", users.getUserName());
+            updatedData.put("name", users.getName());
+
+            currentUserRef.updateChildren(updatedData).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void unused) {
+                    Toast.makeText(context, "Updated Successfully", Toast.LENGTH_SHORT).show();
+                    setData(currentUserRef);
+                    pd.dismiss();
+                }
+            });
+        }
     }
 
     private void setData(DatabaseReference currentUserRef) {
@@ -337,14 +359,18 @@ public class UserProfileFragment extends Fragment implements View.OnClickListene
                     String userName_txt = snapshot.child("userName").getValue().toString();
                     String nameTxt = snapshot.child("name").getValue().toString();
                     String email_txt = snapshot.child("email").getValue().toString();
+                    String mobile_txt = snapshot.child("mobileNo").getValue().toString();
                     String uri = snapshot.child("imageUrl").getValue().toString();
                     userName.setText(userName_txt);
                     name.setText(nameTxt);
+                    mobileNo.setText(mobile_txt);
+                    mobileNo.setEnabled(false);
+                    mobileNo.setTextColor(ContextCompat.getColor(context, R.color.netflix_grey));
                     email.setText(email_txt);
                     email.setEnabled(false);
                     email.setTextColor(ContextCompat.getColor(context, R.color.netflix_grey));
 
-                    if (uri.equals(null)) {
+                    if (uri.equals(null) || uri.equals("")) {
                         profileImage.setVisibility(View.VISIBLE);
                     } else {
                         profileImage.setVisibility(View.VISIBLE);

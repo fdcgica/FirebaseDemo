@@ -10,6 +10,7 @@ import android.app.DownloadManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.IntentSender;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.Build;
@@ -40,6 +41,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.firebasedemo.Adapters.WeatherItemAdapter;
+import com.example.firebasedemo.Constants.Constants;
 import com.example.firebasedemo.Interface.WeatherAPICallback;
 import com.example.firebasedemo.Model.WeatherDataService;
 import com.example.firebasedemo.Model.WeatherForecastModel;
@@ -143,57 +145,65 @@ public class ForecastsFragment extends Fragment {
     }
     private void getCurrentLocation(){
         pd.setMessage("Fetching Data");
+        pd.setCancelable(false);
         pd.show();
+
         WeatherDataService weatherDataService = new WeatherDataService(getActivity());
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
-                if (isGPSEnabled()) {
+            if (isGPSEnabled()) {
 
-                    LocationServices.getFusedLocationProviderClient(getActivity())
-                            .requestLocationUpdates(locationRequest, new LocationCallback() {
-                                @Override
-                                public void onLocationResult(@NonNull LocationResult locationResult) {
-                                    super.onLocationResult(locationResult);
+                LocationServices.getFusedLocationProviderClient(getActivity())
+                        .requestLocationUpdates(locationRequest, new LocationCallback() {
+                            @Override
+                            public void onLocationResult(@NonNull LocationResult locationResult) {
+                                super.onLocationResult(locationResult);
 
-                                    LocationServices.getFusedLocationProviderClient(getActivity())
-                                            .removeLocationUpdates(this);
+                                LocationServices.getFusedLocationProviderClient(getActivity())
+                                        .removeLocationUpdates(this);
 
-                                    if (locationResult != null && locationResult.getLocations().size() >0){
+                                if (locationResult != null && locationResult.getLocations().size() >0){
 
-                                        int index = locationResult.getLocations().size() - 1;
-                                        double latitude = locationResult.getLocations().get(index).getLatitude();
-                                        double longitude = locationResult.getLocations().get(index).getLongitude();
-                                        weatherDataService.getForecast(latitude, longitude, new WeatherAPICallback() {
-                                            @Override
-                                            public void onSuccess(List<WeatherForecastModel> weatherForecastModels) {
+                                    int index = locationResult.getLocations().size() - 1;
+                                    double latitude = locationResult.getLocations().get(index).getLatitude();
+                                    double longitude = locationResult.getLocations().get(index).getLongitude();
 
-                                                mWeatherAdapter = new WeatherItemAdapter(getActivity(), weatherForecastModels);
-                                                myRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-                                                myRecyclerView.setHasFixedSize(true);
-                                                myRecyclerView.setAdapter(mWeatherAdapter);
-                                                pd.dismiss();
-                                            }
+                                    Constants.LATITUDE = latitude;
+                                    Constants.LONGITUDE = longitude;
+                                    editor.putString("latitude", String.valueOf(latitude));
+                                    editor.putString("longitude", String.valueOf(longitude));
+                                    editor.clear();
+                                    weatherDataService.getForecast( new WeatherAPICallback() {
+                                        @Override
+                                        public void onSuccess(List<WeatherForecastModel> weatherForecastModels) {
 
-                                            @Override
-                                            public void onError(String message) {
-                                                Toast.makeText(getActivity(),"Somethings Wrong", Toast.LENGTH_SHORT).show();
+                                            mWeatherAdapter = new WeatherItemAdapter(getActivity(), weatherForecastModels);
+                                            myRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                                            myRecyclerView.setHasFixedSize(true);
+                                            myRecyclerView.setAdapter(mWeatherAdapter);
+                                            pd.dismiss();
+                                        }
 
-                                            }
-                                        });
+                                        @Override
+                                        public void onError(String message) {
+                                            Toast.makeText(getActivity(),"Somethings Wrong", Toast.LENGTH_SHORT).show();
 
-                                    }
+                                        }
+                                    });
+
                                 }
-                            }, Looper.getMainLooper());
-
-                } else {
-                    turnOnGPS();
-                }
+                            }
+                        }, Looper.getMainLooper());
 
             } else {
-                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                turnOnGPS();
             }
+
+        } else {
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         }
     }
     private void turnOnGPS() {
@@ -239,7 +249,6 @@ public class ForecastsFragment extends Fragment {
         boolean isEnabled = false;
 
         if (locationManager == null) {
-            //locationManager = (LocationManager) getSystemService(getActivity().LOCATION_SERVICE);
             locationManager = (LocationManager) requireActivity().getSystemService(Context.LOCATION_SERVICE);
         }
 

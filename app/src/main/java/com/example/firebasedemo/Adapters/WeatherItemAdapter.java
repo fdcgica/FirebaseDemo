@@ -1,6 +1,10 @@
 package com.example.firebasedemo.Adapters;
 
+import static android.content.ContentValues.TAG;
+
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import com.example.firebasedemo.Fragments.ForecastsItemFragment;
 import com.example.firebasedemo.Model.WeatherForecastModel;
 import com.example.firebasedemo.R;
+import com.example.firebasedemo.Utils.FormatUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -24,6 +29,7 @@ import java.util.List;
 public class WeatherItemAdapter extends RecyclerView.Adapter<WeatherItemAdapter.WeatherItemHolder> {
     private Context mContext;
     private List<WeatherForecastModel> mWeathers;
+    private String weatherIconAPI = "https://openweathermap.org/img/wn/";
 
     public WeatherItemAdapter(FragmentActivity activity, List<WeatherForecastModel> weatherForecastModels) {
         mContext = activity;
@@ -32,17 +38,18 @@ public class WeatherItemAdapter extends RecyclerView.Adapter<WeatherItemAdapter.
     }
 
     class WeatherItemHolder extends ViewHolder{
-        private TextView temp,temp_min,temp_max,weather_main,weather_description;
+        private TextView temp,tempMin,tempMax,weatherMain,weatherDescription,weatherDate;
         private ImageView weatherIcon;
 
 
         public WeatherItemHolder(@NonNull View itemView) {
             super(itemView);
             temp = itemView.findViewById(R.id.weather_temp);
-            temp_min = itemView.findViewById(R.id.weather_temp_min);
-            temp_max = itemView.findViewById(R.id.weather_temp_max);
-            weather_main = itemView.findViewById(R.id.weather_main);
-            weather_description = itemView.findViewById(R.id.weather_description);
+            tempMin = itemView.findViewById(R.id.weather_temp_min);
+            tempMax = itemView.findViewById(R.id.weather_temp_max);
+            weatherMain = itemView.findViewById(R.id.weather_main);
+            weatherDescription = itemView.findViewById(R.id.weather_description);
+            weatherDate = itemView.findViewById(R.id.weather_date);
             weatherIcon = itemView.findViewById(R.id.weather_icon);
         }
     }
@@ -54,21 +61,23 @@ public class WeatherItemAdapter extends RecyclerView.Adapter<WeatherItemAdapter.
                 .inflate(R.layout.weather_item, parent, false);
         return new WeatherItemHolder(itemView);
     }
-
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull WeatherItemHolder holder, int position) {
         WeatherForecastModel currentModel = mWeathers.get(position);
-        holder.weather_main.setText(currentModel.getWeatherMain());
-        holder.weather_description.setText(currentModel.getDescription());
-        Picasso.get().load("https://openweathermap.org/img/wn/" + currentModel.getWeatherIcon() +".png").into(holder.weatherIcon);
-        holder.temp.setText(String.valueOf(currentModel.getTemp()) + R.string.celcius);
-        holder.temp_min.setText(String.valueOf(currentModel.getTempMin()) + R.string.celcius);
-        holder.temp_max.setText(String.valueOf(currentModel.getTempMax()) + R.string.celcius);
+        holder.weatherMain.setText(currentModel.getWeatherMain());
+        holder.weatherDescription.setText(currentModel.getWeatherDescription());
+        holder.weatherDate.setText(FormatUtils.formatDate(currentModel.getDtTxt()));
+        Picasso.get().load(weatherIconAPI + currentModel.getWeatherIcon() +"@2x.png").into(holder.weatherIcon);
+        holder.temp.setText(currentModel.getTemp() + "" + mContext.getString(R.string.celcius));
+        holder.tempMin.setText(currentModel.getTempMin() + "" + mContext.getString(R.string.celcius));
+        holder.tempMax.setText(currentModel.getTempMax() + "" + mContext.getString(R.string.celcius));
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ForecastsItemFragment dialogFragment = ForecastsItemFragment.newInstance();
-                dialogFragment.show(((AppCompatActivity) mContext).getSupportFragmentManager(), "dialog_fragment");
+                ForecastsItemFragment dialogFragment = ForecastsItemFragment.newInstance(currentModel);
+                dialogFragment.show(((FragmentActivity) mContext).getSupportFragmentManager(), "dialog_fragment");
+
             }
         });
     }

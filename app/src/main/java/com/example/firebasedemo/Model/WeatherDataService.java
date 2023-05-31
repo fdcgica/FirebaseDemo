@@ -2,13 +2,18 @@ package com.example.firebasedemo.Model;
 
 import static android.content.ContentValues.TAG;
 
+import static com.example.firebasedemo.Constants.Constants.API_KEY;
+import static com.example.firebasedemo.Constants.Constants.LATITUDE;
+import static com.example.firebasedemo.Constants.Constants.LONGITUDE;
+import static com.example.firebasedemo.Constants.Constants.QUERY_FOR_CURRENT_LOCATION;
+
 import android.content.Context;
-import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.example.firebasedemo.Constants.Constants;
 import com.example.firebasedemo.Interface.WeatherAPICallback;
 import com.example.firebasedemo.Singleton.MySingleton;
 import com.example.firebasedemo.Utils.FormatUtils;
@@ -20,8 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WeatherDataService {
-    public static final String QUERY_FOR_CURRENT_LOCATION = "https://api.openweathermap.org/data/2.5/forecast?";
-    public static final String API_KEY = "895284fb2d2c50a520ea537456963d9c";
     Context context;
     String stringRes;
 
@@ -29,33 +32,34 @@ public class WeatherDataService {
         this.context = context;
     }
 
-     public void getForecast(Double latitude, Double longitude, WeatherAPICallback weatherAPICallback){
+     public void getForecast(WeatherAPICallback weatherAPICallback){
 
-         String url = QUERY_FOR_CURRENT_LOCATION + "lat=" + latitude + "&lon=" + longitude + "&appid=" + API_KEY;
+         String url = QUERY_FOR_CURRENT_LOCATION + "lat=" + LATITUDE + "&lon=" + LONGITUDE + "&appid=" + API_KEY;
          List<WeatherForecastModel> forecast = new ArrayList<>();
 
             JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, null, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     stringRes = "";
-                    JSONArray list = response.optJSONArray("list");
-                    if(list!=null){
-                        for(int x = 0; x < list.length(); x+=8) {
+                    JSONArray list = response.optJSONArray("list");//list[]
+                    if (list != null) {
+                        //List
+                        for (int x = 0; x < list.length(); x += 8) {
                             WeatherForecastModel reportDay = new WeatherForecastModel();
                             JSONObject row = list.optJSONObject(x);
-                            JSONObject dayMain = row.optJSONObject("main");
-                            JSONArray dayWeather = row.optJSONArray("weather");
+                            JSONObject dayMain = row.optJSONObject("main");//main{}
+                            JSONArray dayWeather = row.optJSONArray("weather");//weather[]
 
-                            reportDay.setDateTime(row.optString("dt_txt"));
+                            reportDay.setDtTxt(row.optString("dt_txt"));
 
-                            for(int i = 0; i < dayWeather.length(); i++) {
-                                JSONObject getWeatherData = dayWeather.optJSONObject(i);
-
-                                reportDay.setWeatherMain(getWeatherData.optString("main"));
-                                reportDay.setDescription(getWeatherData.optString("description"));
-                                reportDay.setWeatherIcon(getWeatherData.optString("icon"));
-
+                            //Weather loop
+                            if (dayWeather != null && dayWeather.length() > 0) {
+                                JSONObject weatherData = dayWeather.optJSONObject(0);
+                                reportDay.setWeatherMain(weatherData.optString("main"));
+                                reportDay.setWeatherDescription(weatherData.optString("description"));
+                                reportDay.setWeatherIcon(weatherData.optString("icon"));
                             }
+
                             float kelvinTemp = dayMain.optLong("temp");
                             float kelvinTempMin = dayMain.optLong("temp_min");
                             float kelvinTempMax = dayMain.optLong("temp_max");
@@ -67,16 +71,23 @@ public class WeatherDataService {
                             float formattedTemp = FormatUtils.formatFloatToTwoDecimalPlaces(celsiusTemp);
                             float formattedTempMin = FormatUtils.formatFloatToTwoDecimalPlaces(celsiusTempMin);
                             float formattedTempMax = FormatUtils.formatFloatToTwoDecimalPlaces(celsiusTempMax);
-                            Log.d(TAG, "wew: "+ formattedTemp);
-                            Log.d(TAG, "wew: "+ formattedTempMin);
-                            Log.d(TAG, "wew: "+ formattedTempMax);
-
 
                             reportDay.setTemp(formattedTemp);
                             reportDay.setTempMin(formattedTempMin);
                             reportDay.setTempMax(formattedTempMax);
 
+                            JSONObject windMain = row.optJSONObject("wind");//wind{}
+                            reportDay.setWindSpeed(windMain.optLong("speed"));
+                            reportDay.setWindDegree(windMain.optInt("deg"));
+                            reportDay.setWindGust(windMain.optLong("gust"));
+
                             forecast.add(reportDay);
+                        }
+                    }
+                    JSONObject city = response.optJSONObject("city");//city{}
+                    if(city != null){
+                        for (int y = 0; y < city.length(); y++){
+
                         }
                     }
                     weatherAPICallback.onSuccess(forecast);
@@ -89,8 +100,4 @@ public class WeatherDataService {
             });
             MySingleton.getInstance(context).addToRequestQueue(request);
     }
-
-//    public List<WeatherForecastModel> getForecastByCurrentLocation(Double latitude, Double longitude){
-//
-//    }
 }

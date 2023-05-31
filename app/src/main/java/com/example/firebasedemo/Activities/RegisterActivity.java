@@ -27,7 +27,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.HashMap;
 
 public class RegisterActivity extends AppCompatActivity {
-    private TextInputEditText username,name,email,password;
+    private TextInputEditText username,name,email,password,mobileNum;
     private Button register;
     private TextView loginUser;
     ProgressDialog pd;
@@ -43,6 +43,7 @@ public class RegisterActivity extends AppCompatActivity {
         username = findViewById(R.id.username);
         name = findViewById(R.id.name);
         email = findViewById(R.id.email);
+        mobileNum = findViewById(R.id.mobile);
         password = findViewById(R.id.password);
         register = findViewById(R.id.register);
         loginUser = findViewById(R.id.login_user);
@@ -62,6 +63,7 @@ public class RegisterActivity extends AppCompatActivity {
                 String txtName = name.getText().toString();
                 String txtEmail = email.getText().toString();
                 String txtPassword = password.getText().toString();
+                String txtMobile = mobileNum.getText().toString();
 
                 if(TextUtils.isEmpty(txtUsername) || TextUtils.isEmpty(txtName) || TextUtils.isEmpty(txtEmail) || TextUtils.isEmpty(txtPassword)){
                     Toast.makeText(RegisterActivity.this, "Please Input all fields", Toast.LENGTH_SHORT).show();
@@ -69,12 +71,12 @@ public class RegisterActivity extends AppCompatActivity {
                     Toast.makeText(RegisterActivity.this, "Password too short", Toast.LENGTH_SHORT).show();
                 }
                 else{
-                    registerUser(txtUsername,txtName,txtEmail,txtPassword);
+                    registerUser(txtUsername,txtName,txtEmail,txtPassword,txtMobile);
                 }
             }
         });
     }
-    private void registerUser(String username,String name, String email, String password){
+    private void registerUser(String username,String name, String email, String password, String mobileNo){
         pd.setMessage("Please Wait");
         pd.show();
         mRootRef = FirebaseDatabase.getInstance().getReference();
@@ -83,7 +85,7 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onSuccess(AuthResult authResult) {
                 String userID = mAuth.getCurrentUser().getUid();
-                Users users = new Users(username, name, email, password, "", userID);
+                Users users = new Users(username, name, email, password, "", userID, mobileNo);
                 mRootRef.child("Users").child(mAuth.getCurrentUser().getUid()).setValue(users).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
