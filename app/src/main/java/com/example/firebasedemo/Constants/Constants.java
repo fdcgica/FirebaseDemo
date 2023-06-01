@@ -7,6 +7,7 @@ public class Constants {
 
     public static final String API_KEY = "895284fb2d2c50a520ea537456963d9c";
 
-    public static final String QUERY_FOR_CURRENT_LOCATION = "https://api.openweathermap.org/data/2.5/forecast?";
+    public static final String QUERY_FOR_FORECAST = "https://api.openweathermap.org/data/2.5/forecast?";
+    public static final String QUERY_FOR_CURRENT_WEATHER = "https://api.openweathermap.org/data/2.5/weather?";
 }
 

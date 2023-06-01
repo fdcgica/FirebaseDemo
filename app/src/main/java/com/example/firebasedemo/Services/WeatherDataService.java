@@ -1,11 +1,11 @@
-package com.example.firebasedemo.Model;
+package com.example.firebasedemo.Services;
 
 import static android.content.ContentValues.TAG;
 
 import static com.example.firebasedemo.Constants.Constants.API_KEY;
 import static com.example.firebasedemo.Constants.Constants.LATITUDE;
 import static com.example.firebasedemo.Constants.Constants.LONGITUDE;
-import static com.example.firebasedemo.Constants.Constants.QUERY_FOR_CURRENT_LOCATION;
+import static com.example.firebasedemo.Constants.Constants.QUERY_FOR_FORECAST;
 
 import android.content.Context;
 
@@ -13,8 +13,8 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.example.firebasedemo.Constants.Constants;
 import com.example.firebasedemo.Interface.WeatherAPICallback;
+import com.example.firebasedemo.Model.WeatherForecastModel;
 import com.example.firebasedemo.Singleton.MySingleton;
 import com.example.firebasedemo.Utils.FormatUtils;
 
@@ -26,7 +26,6 @@ import java.util.List;
 
 public class WeatherDataService {
     Context context;
-    String stringRes;
 
     public WeatherDataService(Context context) {
         this.context = context;
@@ -34,13 +33,12 @@ public class WeatherDataService {
 
      public void getForecast(WeatherAPICallback weatherAPICallback){
 
-         String url = QUERY_FOR_CURRENT_LOCATION + "lat=" + LATITUDE + "&lon=" + LONGITUDE + "&appid=" + API_KEY;
+         String url = QUERY_FOR_FORECAST + "lat=" + LATITUDE + "&lon=" + LONGITUDE + "&appid=" + API_KEY;
          List<WeatherForecastModel> forecast = new ArrayList<>();
 
             JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, null, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
-                    stringRes = "";
                     JSONArray list = response.optJSONArray("list");//list[]
                     if (list != null) {
                         //List

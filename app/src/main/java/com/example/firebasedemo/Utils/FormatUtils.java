@@ -30,4 +30,18 @@ public class FormatUtils {
         }
         return "";
     }
+    public static String formatDate(long timestamp) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        return format.format(new Date(timestamp * 1000));
+    }
+    public static String getFormattedSunriseTime(long sunriseTime) {
+        Date sunriseDate = new Date(sunriseTime * 1000); // Convert Unix timestamp to milliseconds
+        SimpleDateFormat format = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+        return format.format(sunriseDate);
+    }
+    public static String getFormattedSunsetTime(long sunsetTime) {
+        Date sunsetDate = new Date(sunsetTime * 1000); // Convert Unix timestamp to milliseconds
+        SimpleDateFormat format = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+        return format.format(sunsetDate);
+    }
 }

@@ -1,21 +1,36 @@
 package com.example.firebasedemo.Fragments;
 
+import static android.content.ContentValues.TAG;
 import static com.example.firebasedemo.Constants.Constants.LATITUDE;
 import static com.example.firebasedemo.Constants.Constants.LONGITUDE;
 
+import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.Button;
+import android.widget.TextView;
 
+import com.example.firebasedemo.Interface.CoordinatesCallback;
+import com.example.firebasedemo.Interface.WeatherTodayCallback;
+import com.example.firebasedemo.Model.WeatherTodayModel;
 import com.example.firebasedemo.R;
+import com.example.firebasedemo.Services.WeatherTodayService;
+import com.example.firebasedemo.Utils.FormatUtils;
+import com.example.firebasedemo.Utils.LocationUtils;
+import com.google.android.gms.location.LocationCallback;
+
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -32,8 +47,9 @@ public class HomeFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private WebView webView;
-    private Button refreshBtn;
+    private TextView mLocation, mDate, mTemp,mTempMin,mTempMax,mStatus,mSunrise,mSunset,mWind,mPressure,mHumidity;
+    private LocationUtils locationUtils;
+    private ProgressDialog pd;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -70,50 +86,63 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
+        mLocation = view.findViewById(R.id.location);
+        mDate = view.findViewById(R.id.updated_at);
+        mTemp = view.findViewById(R.id.temp);
+        mTempMin = view.findViewById(R.id.temp_min);
+        mTempMax = view.findViewById(R.id.temp_max);
+        mStatus = view.findViewById(R.id.status);
+        mSunrise = view.findViewById(R.id.sunrise);
+        mSunset = view.findViewById(R.id.sunset);
+        mWind = view.findViewById(R.id.wind);
+        mPressure = view.findViewById(R.id.pressure);
+        mHumidity = view.findViewById(R.id.humidity);
+        locationUtils = new LocationUtils();
+        pd = new ProgressDialog(getActivity());
         ((AppCompatActivity) requireActivity()).getSupportActionBar().setTitle("Home");
 
-        refreshBtn = view.findViewById(R.id.buttonRefresh);
-        webView = view.findViewById(R.id.webView);
-        showWebview();
-        refreshBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showWebview();
-            }
-        });
-
+        getWeatherToday();
         return view;
     }
 
-    private void showWebview(){
+    private void getWeatherToday(){
+        pd.setMessage("Fetching Data");
+        pd.setCancelable(false);
+        pd.show();
+        WeatherTodayService weatherTodayService = new WeatherTodayService(getContext());
+        locationUtils.getCoordinates(getActivity(), new CoordinatesCallback() {
+            @Override
+            public void onCoordinatesReceived(double latitude, double longitude) {
+                weatherTodayService.getWeatherToday(new WeatherTodayCallback() {
+                    @SuppressLint("SetTextI18n")
+                    @Override
+                    public void onSuccess(List<WeatherTodayModel> weatherTodayModels) {
 
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.getSettings().setBuiltInZoomControls(true);
-        webView.getSettings().setDisplayZoomControls(false);
-       // webView.loadUrl("https://openweathermap.org/weathermap?basemap=map&cities=true&layer=temperature&lat=10&lon=123");
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyPrefs", getActivity().MODE_PRIVATE);
-        String latitude = sharedPreferences.getString("latitude", "");
-        String longitude = sharedPreferences.getString("longitude", "");
-        //webView.loadUrl("https://openweathermap.org/weathermap?basemap=map&cities=true&layer=temperature&lat="+latitude+"&lon="+longitude);
-        webView.loadUrl("https://www.windy.com/?"+latitude+","+longitude+",5");
+                        if (weatherTodayModels.size() > 0) {
+                            WeatherTodayModel weatherToday = weatherTodayModels.get(0);
 
-    }
+                            // Set the values in the views
+                            mLocation.setText("" + weatherToday.getLocation());
+                            mDate.setText("" + FormatUtils.formatDate(FormatUtils.formatDate(weatherToday.getDateTime())));
+                            mTemp.setText("" + weatherToday.getTemp() + "°C");
+                            mTempMin.setText("Min: " + weatherToday.getTempMin() + "°C");
+                            mTempMax.setText("Max: " + weatherToday.getTempMax() + "°C");
+                            mStatus.setText("" + weatherToday.getStatus());
+                            mSunrise.setText("" + FormatUtils.getFormattedSunriseTime(weatherToday.getSunrise()));
+                            mSunset.setText("" + FormatUtils.getFormattedSunsetTime(weatherToday.getSunset()));
+                            mWind.setText("" + weatherToday.getWindSpeed() + " m/s");
+                            mPressure.setText("" + weatherToday.getPressure() + " hPa");
+                            mHumidity.setText("" + weatherToday.getHumidity() + "%");
+                        }
+                        pd.dismiss();
+                    }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        webView.onResume();
-    }
+                    @Override
+                    public void onError(String message) {
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        webView.onPause();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        webView.destroy();
+                    }
+                });
+            }
+        });
     }
 }

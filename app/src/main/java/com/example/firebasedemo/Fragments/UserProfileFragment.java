@@ -77,6 +77,7 @@ public class UserProfileFragment extends Fragment implements View.OnClickListene
     private Button uploadBtn, updateBtn, captureBtn;
     private StorageReference mStorageRef;
     private DatabaseReference mDatabaseRef;
+    private DatabaseReference currentUserRef;
     private FirebaseAuth mAuth;
     private TextInputEditText userName, name, email, mobileNo;
     private ImageView profileImage;
@@ -139,12 +140,12 @@ public class UserProfileFragment extends Fragment implements View.OnClickListene
         context = getContext();
         pd = new ProgressDialog(context);
 
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
         String uid = currentUser.getUid();
         mStorageRef = FirebaseStorage.getInstance().getReference("uploads");
         mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Users");
-        DatabaseReference currentUserRef = mDatabaseRef.child(uid);
+        currentUserRef = mDatabaseRef.child(uid);
 
         imagePickerLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
@@ -212,7 +213,7 @@ public class UserProfileFragment extends Fragment implements View.OnClickListene
                 FirebaseUser currentUser = firebaseAuth.getCurrentUser();
                 String uid = currentUser.getUid();
                 mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Users");
-                DatabaseReference currentUserRef = mDatabaseRef.child(uid);
+                currentUserRef = mDatabaseRef.child(uid);
                 updateUser(currentUserRef);
                 break;
             case R.id.upload:
