@@ -29,6 +29,7 @@ import com.example.firebasedemo.Fragments.HomeFragment;
 import com.example.firebasedemo.Fragments.UserProfileFragment;
 import com.example.firebasedemo.Fragments.UserSettingsFragment;
 import com.example.firebasedemo.R;
+import com.example.firebasedemo.Singleton.CurrentUserSingleton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -175,9 +176,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadUserData(){
+
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
         String uid = currentUser.getUid();
+        CurrentUserSingleton.getInstance().setCurrentUserId(uid);
         DatabaseReference usersRef  = FirebaseDatabase.getInstance().getReference().child("Users");
         DatabaseReference currentUserRef = usersRef.child(uid);
 

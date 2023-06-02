@@ -18,6 +18,8 @@ import android.widget.Toast;
 
 import com.example.firebasedemo.Model.WeatherForecastModel;
 import com.example.firebasedemo.R;
+import com.example.firebasedemo.Utils.FormatUtils;
+
 public class ForecastsItemFragment extends DialogFragment {
 
     private WeatherForecastModel weatherForecastModel;
@@ -83,7 +85,8 @@ public class ForecastsItemFragment extends DialogFragment {
 
         // Set the data to the views
         if (weatherForecastModel != null) {
-            dateTimeTextView.setText(weatherForecastModel.getDtTxt());
+            String day = FormatUtils.getDayFromDate(FormatUtils.formatDate(weatherForecastModel.getDtTxt()));
+            dateTimeTextView.setText(""+day+"\n"+FormatUtils.formatDate(weatherForecastModel.getDtTxt()));
             mainTextView.setText(weatherForecastModel.getWeatherMain());
             descriptionTextView.setText(weatherForecastModel.getWeatherDescription());
             tempTextView.setText(String.valueOf(weatherForecastModel.getTemp()));

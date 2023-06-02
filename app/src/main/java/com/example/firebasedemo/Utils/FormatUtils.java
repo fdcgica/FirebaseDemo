@@ -30,6 +30,17 @@ public class FormatUtils {
         }
         return "";
     }
+    public static String getDayFromDate(String formattedDate) {
+        DateFormat inputDateFormat = new SimpleDateFormat("yy-MM-dd", Locale.getDefault());
+        DateFormat outputDateFormat = new SimpleDateFormat("EEEE", Locale.getDefault());
+        try {
+            Date date = inputDateFormat.parse(formattedDate);
+            return outputDateFormat.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
     public static String formatDate(long timestamp) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         return format.format(new Date(timestamp * 1000));

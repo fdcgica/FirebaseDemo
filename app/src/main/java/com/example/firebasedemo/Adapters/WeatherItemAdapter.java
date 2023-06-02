@@ -67,7 +67,8 @@ public class WeatherItemAdapter extends RecyclerView.Adapter<WeatherItemAdapter.
         WeatherForecastModel currentModel = mWeathers.get(position);
         holder.weatherMain.setText(currentModel.getWeatherMain());
         holder.weatherDescription.setText(currentModel.getWeatherDescription());
-        holder.weatherDate.setText(FormatUtils.formatDate(currentModel.getDtTxt()));
+        String day = FormatUtils.getDayFromDate(FormatUtils.formatDate(currentModel.getDtTxt()));
+        holder.weatherDate.setText(""+day+"\n"+FormatUtils.formatDate(currentModel.getDtTxt()));
         Picasso.get().load(weatherIconAPI + currentModel.getWeatherIcon() +"@2x.png").into(holder.weatherIcon);
         holder.temp.setText(currentModel.getTemp() + "" + mContext.getString(R.string.celcius));
         holder.tempMin.setText(currentModel.getTempMin() + "" + mContext.getString(R.string.celcius));

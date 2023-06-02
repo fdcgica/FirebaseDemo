@@ -19,13 +19,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.firebasedemo.Interface.CoordinatesCallback;
 import com.example.firebasedemo.Interface.WeatherTodayCallback;
 import com.example.firebasedemo.Model.WeatherTodayModel;
 import com.example.firebasedemo.R;
 import com.example.firebasedemo.Services.WeatherTodayService;
+import com.example.firebasedemo.Singleton.CurrentUserSingleton;
 import com.example.firebasedemo.Utils.FormatUtils;
 import com.example.firebasedemo.Utils.LocationUtils;
 import com.google.android.gms.location.LocationCallback;
@@ -37,7 +41,7 @@ import java.util.List;
  * Use the {@link HomeFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements View.OnClickListener {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -50,6 +54,9 @@ public class HomeFragment extends Fragment {
     private TextView mLocation, mDate, mTemp,mTempMin,mTempMax,mStatus,mSunrise,mSunset,mWind,mPressure,mHumidity;
     private LocationUtils locationUtils;
     private ProgressDialog pd;
+    private ImageView mFavoriteLocation;
+    private LinearLayout mRefreshContainer;
+    private boolean isFavorite = false;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -97,6 +104,10 @@ public class HomeFragment extends Fragment {
         mWind = view.findViewById(R.id.wind);
         mPressure = view.findViewById(R.id.pressure);
         mHumidity = view.findViewById(R.id.humidity);
+        mFavoriteLocation = view.findViewById(R.id.favoriteLocationIcon);
+        mRefreshContainer = view.findViewById(R.id.refreshContainer);
+        mFavoriteLocation.setOnClickListener(this);
+        mRefreshContainer.setOnClickListener(this);
         locationUtils = new LocationUtils();
         pd = new ProgressDialog(getActivity());
         ((AppCompatActivity) requireActivity()).getSupportActionBar().setTitle("Home");
@@ -144,5 +155,31 @@ public class HomeFragment extends Fragment {
                 });
             }
         });
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.refreshContainer:
+                String currentUserId = CurrentUserSingleton.getInstance().getCurrentUserId();
+
+                Toast.makeText(getContext(),"Refresh Clicked! "+ currentUserId, Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.favoriteLocationIcon:
+                // Toggle the favorite status
+                isFavorite = !isFavorite;
+
+                // Change the color based on the favorite status
+                if (isFavorite) {
+                    mFavoriteLocation.setColorFilter(getActivity().getColor(R.color.active));
+                    Toast.makeText(getContext(), "Icon Clicked! (Active)", Toast.LENGTH_SHORT).show();
+                } else {
+                    mFavoriteLocation.setColorFilter(getActivity().getColor(R.color.inActive));
+                    Toast.makeText(getContext(), "Icon Clicked! (Inactive)", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            default:
+                break;
+        }
     }
 }

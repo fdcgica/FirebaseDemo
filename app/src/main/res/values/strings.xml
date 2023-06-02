@@ -37,4 +37,5 @@
     <string name="error_msg">Something went wrong</string>
     <string name="location">Location</string>
     <string name="updated_at">Updated At</string>
+    <string name="refresh">Refresh</string>
 </resources>

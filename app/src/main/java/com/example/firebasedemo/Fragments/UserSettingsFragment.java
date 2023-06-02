@@ -1,15 +1,33 @@
 package com.example.firebasedemo.Fragments;
 
+import static android.app.Activity.RESULT_OK;
+
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import android.speech.RecognitionListener;
+import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.firebasedemo.R;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -26,7 +44,10 @@ public class UserSettingsFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private static final int REQUEST_CODE_SPEECH_INPUT = 100;
 
+    private TextView resultTextView;
+    private Button speechToTextButton;
     public UserSettingsFragment() {
         // Required empty public constructor
     }
@@ -62,9 +83,33 @@ public class UserSettingsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_user_settings, container, false);
-        // Inside the fragment's onViewCreated() or any appropriate method
+
+        resultTextView = view.findViewById(R.id.resultTextView);
+        speechToTextButton = view.findViewById(R.id.speechToTextButton);
         ((AppCompatActivity) requireActivity()).getSupportActionBar().setTitle("Settings");
 
+        speechToTextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startSpeechToText();
+            }
+        });
+
         return view;
+    }
+    private void startSpeechToText() {
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT,"Speak");
+        startActivityForResult(intent, REQUEST_CODE_SPEECH_INPUT);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == REQUEST_CODE_SPEECH_INPUT && resultCode == RESULT_OK){
+            ArrayList<String> placesText = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+            resultTextView.setText(placesText.get(0));
+        }
     }
 }

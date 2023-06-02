@@ -84,6 +84,7 @@ public class RegisterActivity extends AppCompatActivity {
         mAuth.createUserWithEmailAndPassword(email,password).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
             @Override
             public void onSuccess(AuthResult authResult) {
+
                 String userID = mAuth.getCurrentUser().getUid();
                 Users users = new Users(username, name, email, password, "", userID, mobileNo);
                 mRootRef.child("Users").child(mAuth.getCurrentUser().getUid()).setValue(users).addOnCompleteListener(new OnCompleteListener<Void>() {
