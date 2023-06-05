@@ -139,13 +139,13 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
                     // Set the values in the views
                     mLocation.setText("" + weatherToday.getLocation());
-                    mDate.setText("" + FormatUtils.formatDate(FormatUtils.formatDate(weatherToday.getDateTime())));
+                    mDate.setText("Updated at: " + FormatUtils.formatDate(weatherToday.getDateTime()));
                     mTemp.setText("" + weatherToday.getTemp() + "°C");
                     mTempMin.setText("Min: " + weatherToday.getTempMin() + "°C");
                     mTempMax.setText("Max: " + weatherToday.getTempMax() + "°C");
                     mStatus.setText("" + weatherToday.getStatus());
-                    mSunrise.setText("" + FormatUtils.getFormattedSunriseTime(weatherToday.getSunrise()));
-                    mSunset.setText("" + FormatUtils.getFormattedSunsetTime(weatherToday.getSunset()));
+                    mSunrise.setText("" + FormatUtils.getSunTime(weatherToday.getSunrise()));
+                    mSunset.setText("" + FormatUtils.getSunTime(weatherToday.getSunset()));
                     mWind.setText("" + weatherToday.getWindSpeed() + " m/s");
                     mPressure.setText("" + weatherToday.getPressure() + " hPa");
                     mHumidity.setText("" + weatherToday.getHumidity() + "%");
@@ -189,13 +189,13 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
                             // Set the values in the views
                             mLocation.setText("" + weatherToday.getLocation());
-                            mDate.setText("" + FormatUtils.formatDate(FormatUtils.formatDate(weatherToday.getDateTime())));
+                            mDate.setText("Updated at: " + FormatUtils.formatDate(weatherToday.getDateTime()));
                             mTemp.setText("" + weatherToday.getTemp() + "°C");
                             mTempMin.setText("Min: " + weatherToday.getTempMin() + "°C");
                             mTempMax.setText("Max: " + weatherToday.getTempMax() + "°C");
                             mStatus.setText("" + weatherToday.getStatus());
-                            mSunrise.setText("" + FormatUtils.getFormattedSunriseTime(weatherToday.getSunrise()));
-                            mSunset.setText("" + FormatUtils.getFormattedSunsetTime(weatherToday.getSunset()));
+                            mSunrise.setText("" + FormatUtils.getSunTime(weatherToday.getSunrise()));
+                            mSunset.setText("" + FormatUtils.getSunTime(weatherToday.getSunset()));
                             mWind.setText("" + weatherToday.getWindSpeed() + " m/s");
                             mPressure.setText("" + weatherToday.getPressure() + " hPa");
                             mHumidity.setText("" + weatherToday.getHumidity() + "%");

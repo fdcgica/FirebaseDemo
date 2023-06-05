@@ -188,18 +188,20 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()){
-                    String name = snapshot.child("name").getValue().toString();
-                    String email = snapshot.child("email").getValue().toString();
-                    String uri = snapshot.child("imageUrl").getValue().toString();
-                    headerName.setText(name);
-                    headerEmail.setText(email);
-                    if(uri.equals("")){
-                    headerImage.setVisibility(View.VISIBLE);
-                    }
-                    else{
-                        Picasso.get().load(uri).into(headerImage);
-                    }
+                    if(snapshot.child("name").getValue() != null ) {
+                        String name = snapshot.child("name").getValue().toString();
+                        String email = snapshot.child("email").getValue().toString();
+                        String uri = snapshot.child("imageUrl").getValue().toString();
+                        headerName.setText(name);
+                        headerEmail.setText(email);
 
+                        if(uri.equals("")){
+                            headerImage.setVisibility(View.VISIBLE);
+                        }
+                        else{
+                            Picasso.get().load(uri).into(headerImage);
+                        }
+                    }
                 }
             }
             @Override

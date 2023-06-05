@@ -81,14 +81,14 @@ public class WeatherDataService {
                             reportDay.setWindDegree(windMain.optInt("deg"));
                             reportDay.setWindGust(windMain.optLong("gust"));
 
-                            forecast.add(reportDay);
-                        }
+                            JSONObject city = response.optJSONObject("city");//city{}
+                            if(city != null){
+                                reportDay.setSunrise(city.optLong("sunrise"));
+                                reportDay.setSunset(city.optLong("sunset"));
+                                reportDay.setCity(city.optString("name"));
+                            }
 
-                        JSONObject city = response.optJSONObject("city");//city{}
-                        if(city != null){
-//                            reportDay.setSunrise(city.optLong("sunrise"));
-//                            reportDay.setSunset(city.optLong("sunset"));
-//                            reportDay.setCity(city.optString("name"));
+                            forecast.add(reportDay);
                         }
                     }
                     weatherAPICallback.onSuccess(forecast);

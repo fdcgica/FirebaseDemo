@@ -1,5 +1,6 @@
 package com.example.firebasedemo.Fragments;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -63,6 +64,7 @@ public class ForecastsItemFragment extends DialogFragment {
         weatherForecastModel = requireArguments().getParcelable("weatherForecastModel");
     }
 
+    @SuppressLint("SetTextI18n")
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -82,16 +84,22 @@ public class ForecastsItemFragment extends DialogFragment {
         TextView tempTextView = dialogView.findViewById(R.id.tv_temp);
         TextView tempMinTextView = dialogView.findViewById(R.id.tv_temp_min);
         TextView tempMaxTextView = dialogView.findViewById(R.id.tv_temp_max);
+        TextView tempSunrise = dialogView.findViewById(R.id.tv_sunrise);
+        TextView tempSunset = dialogView.findViewById(R.id.tv_sunset);
+        TextView tempCity = dialogView.findViewById(R.id.tv_city);
 
         // Set the data to the views
         if (weatherForecastModel != null) {
+            tempCity.setText(weatherForecastModel.getCity());
             String day = FormatUtils.getDayFromDate(FormatUtils.formatDate(weatherForecastModel.getDtTxt()));
             dateTimeTextView.setText(""+day+"\n"+FormatUtils.formatDate(weatherForecastModel.getDtTxt()));
             mainTextView.setText(weatherForecastModel.getWeatherMain());
-            descriptionTextView.setText(weatherForecastModel.getWeatherDescription());
-            tempTextView.setText(String.valueOf(weatherForecastModel.getTemp()));
-            tempMinTextView.setText(String.valueOf(weatherForecastModel.getTempMin()));
-            tempMaxTextView.setText(String.valueOf(weatherForecastModel.getTempMax()));
+            descriptionTextView.setText(weatherForecastModel.getWeatherDescription().substring(0,1).toUpperCase() + weatherForecastModel.getWeatherDescription().substring(1));
+            tempTextView.setText("Temperature: "+weatherForecastModel.getTemp());
+            tempMinTextView.setText("Min Temp: "+weatherForecastModel.getTempMin());
+            tempMaxTextView.setText("Max Temp: "+weatherForecastModel.getTempMax());
+            tempSunrise.setText("Sunrise: " + FormatUtils.getSunTime(weatherForecastModel.getSunrise()));
+            tempSunset.setText("Sunset: " + FormatUtils.getSunTime(weatherForecastModel.getSunset()));
         }
 
         // Set the positive button

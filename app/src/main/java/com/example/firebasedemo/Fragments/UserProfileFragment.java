@@ -162,6 +162,9 @@ public class UserProfileFragment extends Fragment implements View.OnClickListene
                             Toast.makeText(getContext(), "Image added", Toast.LENGTH_SHORT).show();
                             pd.dismiss();
                         }
+                        else {
+                            pd.dismiss();
+                        }
                     }
                 });
         cameraLauncher = registerForActivityResult(
@@ -191,7 +194,7 @@ public class UserProfileFragment extends Fragment implements View.OnClickListene
                                 pd.dismiss();
                             }
                         } else {
-                            Toast.makeText(context, "Camera capture failed", Toast.LENGTH_SHORT).show();
+                            pd.dismiss();
                         }
                     }
                 });
@@ -357,32 +360,34 @@ public class UserProfileFragment extends Fragment implements View.OnClickListene
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
-                    String userName_txt = snapshot.child("userName").getValue().toString();
-                    String nameTxt = snapshot.child("name").getValue().toString();
-                    String email_txt = snapshot.child("email").getValue().toString();
-                    String mobile_txt = snapshot.child("mobileNo").getValue().toString();
-                    String uri = snapshot.child("imageUrl").getValue().toString();
-                    userName.setText(userName_txt);
-                    name.setText(nameTxt);
-                    mobileNo.setText(mobile_txt);
-                    mobileNo.setEnabled(false);
-                    mobileNo.setTextColor(ContextCompat.getColor(context, R.color.netflix_grey));
-                    email.setText(email_txt);
-                    email.setEnabled(false);
-                    email.setTextColor(ContextCompat.getColor(context, R.color.netflix_grey));
+                    if(snapshot.child("name").getValue() != null ) {
+                        String userName_txt = snapshot.child("userName").getValue().toString();
+                        String nameTxt = snapshot.child("name").getValue().toString();
+                        String email_txt = snapshot.child("email").getValue().toString();
+                        String mobile_txt = snapshot.child("mobileNo").getValue().toString();
+                        String uri = snapshot.child("imageUrl").getValue().toString();
+                        userName.setText(userName_txt);
+                        name.setText(nameTxt);
+                        mobileNo.setText(mobile_txt);
+                        mobileNo.setEnabled(false);
+                        mobileNo.setTextColor(ContextCompat.getColor(context, R.color.netflix_grey));
+                        email.setText(email_txt);
+                        email.setEnabled(false);
+                        email.setTextColor(ContextCompat.getColor(context, R.color.netflix_grey));
 
-                    if (uri.equals(null) || uri.equals("")) {
-                        profileImage.setVisibility(View.VISIBLE);
-                    } else {
-                        profileImage.setVisibility(View.VISIBLE);
-                        Picasso.get().load(uri).into(profileImage);
+                        if (uri.equals(null) || uri.equals("")) {
+                            profileImage.setVisibility(View.VISIBLE);
+                        } else {
+                            profileImage.setVisibility(View.VISIBLE);
+                            Picasso.get().load(uri).into(profileImage);
+                        }
                     }
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Toast.makeText(getActivity(), "Error: " + error, Toast.LENGTH_SHORT).show();
             }
         });
     }

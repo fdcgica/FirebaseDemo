@@ -2,6 +2,8 @@ package com.example.firebasedemo.Adapters;
 
 import static android.content.ContentValues.TAG;
 
+import static com.example.firebasedemo.Constants.Constants.weatherIconAPI;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
@@ -29,7 +31,6 @@ import java.util.List;
 public class WeatherItemAdapter extends RecyclerView.Adapter<WeatherItemAdapter.WeatherItemHolder> {
     private Context mContext;
     private List<WeatherForecastModel> mWeathers;
-    private String weatherIconAPI = "https://openweathermap.org/img/wn/";
 
     public WeatherItemAdapter(FragmentActivity activity, List<WeatherForecastModel> weatherForecastModels) {
         mContext = activity;
@@ -85,7 +86,7 @@ public class WeatherItemAdapter extends RecyclerView.Adapter<WeatherItemAdapter.
 
     @Override
     public int getItemCount() {
-        return mWeathers.size();
+        return mWeathers != null ? mWeathers.size(): 0;
     }
 
 }
