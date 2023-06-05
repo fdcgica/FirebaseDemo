@@ -9,5 +9,6 @@ public class Constants {
 
     public static final String QUERY_FOR_FORECAST = "https://api.openweathermap.org/data/2.5/forecast?";
     public static final String QUERY_FOR_CURRENT_WEATHER = "https://api.openweathermap.org/data/2.5/weather?";
+    public static final String QUERY_FOR_WEATHER_BYSPEECH = "https://api.openweathermap.org/data/2.5/weather?";
 }
 

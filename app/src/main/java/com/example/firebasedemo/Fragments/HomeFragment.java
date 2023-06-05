@@ -1,5 +1,6 @@
 package com.example.firebasedemo.Fragments;
 
+import static android.app.Activity.RESULT_OK;
 import static android.content.ContentValues.TAG;
 import static com.example.firebasedemo.Constants.Constants.LATITUDE;
 import static com.example.firebasedemo.Constants.Constants.LONGITUDE;
@@ -7,12 +8,16 @@ import static com.example.firebasedemo.Constants.Constants.LONGITUDE;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,6 +39,7 @@ import com.example.firebasedemo.Utils.FormatUtils;
 import com.example.firebasedemo.Utils.LocationUtils;
 import com.google.android.gms.location.LocationCallback;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -54,9 +60,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private TextView mLocation, mDate, mTemp,mTempMin,mTempMax,mStatus,mSunrise,mSunset,mWind,mPressure,mHumidity;
     private LocationUtils locationUtils;
     private ProgressDialog pd;
-    private ImageView mFavoriteLocation;
     private LinearLayout mRefreshContainer;
-    private boolean isFavorite = false;
+    private ImageView mLocatebySpeech;
+    private static final int REQUEST_CODE_SPEECH_INPUT = 100;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -104,9 +110,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         mWind = view.findViewById(R.id.wind);
         mPressure = view.findViewById(R.id.pressure);
         mHumidity = view.findViewById(R.id.humidity);
-        mFavoriteLocation = view.findViewById(R.id.favoriteLocationIcon);
         mRefreshContainer = view.findViewById(R.id.refreshContainer);
-        mFavoriteLocation.setOnClickListener(this);
+        mLocatebySpeech = view.findViewById(R.id.speechSearch);
+        mLocatebySpeech.setOnClickListener(this);
         mRefreshContainer.setOnClickListener(this);
         locationUtils = new LocationUtils();
         pd = new ProgressDialog(getActivity());
@@ -115,7 +121,49 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         getWeatherToday();
         return view;
     }
+    public void getWeatherbySpeech(String result){
+        pd.setMessage("Fetching Data");
+        pd.setCancelable(false);
+        pd.show();
 
+        WeatherTodayService weatherTodayService = new WeatherTodayService(getContext());
+        weatherTodayService.getWeatherbySpeech(result, new WeatherTodayCallback(){
+
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onSuccess(List<WeatherTodayModel> weatherTodayModels) {
+
+
+                if (weatherTodayModels.size() > 0) {
+                    WeatherTodayModel weatherToday = weatherTodayModels.get(0);
+                    if (weatherToday.getCallback() != 404){
+                        // Set the values in the views
+                        mLocation.setText("" + weatherToday.getLocation());
+                        mDate.setText("" + FormatUtils.formatDate(FormatUtils.formatDate(weatherToday.getDateTime())));
+                        mTemp.setText("" + weatherToday.getTemp() + "°C");
+                        mTempMin.setText("Min: " + weatherToday.getTempMin() + "°C");
+                        mTempMax.setText("Max: " + weatherToday.getTempMax() + "°C");
+                        mStatus.setText("" + weatherToday.getStatus());
+                        mSunrise.setText("" + FormatUtils.getFormattedSunriseTime(weatherToday.getSunrise()));
+                        mSunset.setText("" + FormatUtils.getFormattedSunsetTime(weatherToday.getSunset()));
+                        mWind.setText("" + weatherToday.getWindSpeed() + " m/s");
+                        mPressure.setText("" + weatherToday.getPressure() + " hPa");
+                        mHumidity.setText("" + weatherToday.getHumidity() + "%");
+                    }
+                    else{
+                        Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                pd.dismiss();
+            }
+
+            @Override
+            public void onError(String message) {
+
+            }
+        });
+        pd.dismiss();
+    }
     private void getWeatherToday(){
         pd.setMessage("Fetching Data");
         pd.setCancelable(false);
@@ -156,27 +204,33 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             }
         });
     }
+    private void startSpeechToText() {
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT,"Speak");
+        startActivityForResult(intent, REQUEST_CODE_SPEECH_INPUT);
+
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == REQUEST_CODE_SPEECH_INPUT && resultCode == RESULT_OK){
+            ArrayList<String> placesText = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+            String result = "";
+            result = placesText.get(0);
+            getWeatherbySpeech(result);
+        }
+    }
+
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.refreshContainer:
-                String currentUserId = CurrentUserSingleton.getInstance().getCurrentUserId();
-
-                Toast.makeText(getContext(),"Refresh Clicked! "+ currentUserId, Toast.LENGTH_SHORT).show();
+                getWeatherToday();
                 break;
-            case R.id.favoriteLocationIcon:
-                // Toggle the favorite status
-                isFavorite = !isFavorite;
-
-                // Change the color based on the favorite status
-                if (isFavorite) {
-                    mFavoriteLocation.setColorFilter(getActivity().getColor(R.color.active));
-                    Toast.makeText(getContext(), "Icon Clicked! (Active)", Toast.LENGTH_SHORT).show();
-                } else {
-                    mFavoriteLocation.setColorFilter(getActivity().getColor(R.color.inActive));
-                    Toast.makeText(getContext(), "Icon Clicked! (Inactive)", Toast.LENGTH_SHORT).show();
-                }
+            case R.id.speechSearch:
+                startSpeechToText();
                 break;
             default:
                 break;

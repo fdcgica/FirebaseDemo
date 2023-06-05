@@ -41,10 +41,10 @@
                     android:layout_height="wrap_content" />
 
                 <ImageView
-                    android:id="@+id/favoriteLocationIcon"
+                    android:id="@+id/speechSearch"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:src="@drawable/ic_location_favorite"
+                    android:src="@drawable/ic_microphone"
                     app:tint="@color/colorWhite" />
 
 

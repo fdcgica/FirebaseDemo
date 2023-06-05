@@ -15,6 +15,7 @@ public class WeatherTodayModel {
     private int humidity;
     private float temp;
     private float tempMin;
+    private int callback;
 
     public String getLocation() {
         return location;
@@ -22,6 +23,13 @@ public class WeatherTodayModel {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+    public int getCallback() {
+        return callback;
+    }
+
+    public void setCallback(int callback) {
+        this.callback = callback;
     }
 
     public String getStatus() {
@@ -107,7 +115,8 @@ public class WeatherTodayModel {
     private float tempMax;
     private float windSpeed;
 
-    public WeatherTodayModel(String location, String status, long dateTime, long sunrise, long sunset, int pressure, int humidity, float temp, float tempMin, float tempMax, float windSpeed) {
+    public WeatherTodayModel(int callback, String location, String status, long dateTime, long sunrise, long sunset, int pressure, int humidity, float temp, float tempMin, float tempMax, float windSpeed) {
+        this.callback = callback;
         this.location = location;
         this.status = status;
         this.dateTime = dateTime;
