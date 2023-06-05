@@ -39,6 +39,9 @@ public class WeatherForecastModel implements Parcelable {
     private float rain3h;
     private String sysPod;
     private String dtTxt;
+    private long sunrise;
+    private long sunset;
+    private String city;
 
     public WeatherForecastModel() {
     }
@@ -53,18 +56,13 @@ public class WeatherForecastModel implements Parcelable {
         weatherDescription = in.readString();
         weatherIcon = in.readString();
         pressure = in.readInt();
-        seaLevel = in.readInt();
-        groundLevel = in.readInt();
-        tempKF = in.readFloat();
-        cloudiness = in.readInt();
         windSpeed = in.readFloat();
         windDegree = in.readInt();
         windGust = in.readFloat();
-        visibility = in.readInt();
-        pop = in.readFloat();
-        rain3h = in.readFloat();
-        sysPod = in.readString();
         dtTxt = in.readString();
+        sunrise = in.readLong();
+        sunset = in.readLong();
+        city = in.readString();
     }
 
     public static final Creator<WeatherForecastModel> CREATOR = new Creator<WeatherForecastModel>() {
@@ -79,14 +77,6 @@ public class WeatherForecastModel implements Parcelable {
         }
     };
 
-    public long getDateTime() {
-        return dateTime;
-    }
-
-    public void setDateTime(long dateTime) {
-        this.dateTime = dateTime;
-    }
-
     public float getTemp() {
         return temp;
     }
@@ -95,8 +85,32 @@ public class WeatherForecastModel implements Parcelable {
         this.temp = temp;
     }
 
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
     public float getTempMin() {
         return tempMin;
+    }
+
+    public long getSunrise() {
+        return sunrise;
+    }
+
+    public void setSunrise(long sunrise) {
+        this.sunrise = sunrise;
+    }
+
+    public long getSunset() {
+        return sunset;
+    }
+
+    public void setSunset(long sunset) {
+        this.sunset = sunset;
     }
 
     public void setTempMin(float tempMin) {
@@ -151,38 +165,6 @@ public class WeatherForecastModel implements Parcelable {
         this.pressure = pressure;
     }
 
-    public int getSeaLevel() {
-        return seaLevel;
-    }
-
-    public void setSeaLevel(int seaLevel) {
-        this.seaLevel = seaLevel;
-    }
-
-    public int getGroundLevel() {
-        return groundLevel;
-    }
-
-    public void setGroundLevel(int groundLevel) {
-        this.groundLevel = groundLevel;
-    }
-
-    public float getTempKF() {
-        return tempKF;
-    }
-
-    public void setTempKF(float tempKF) {
-        this.tempKF = tempKF;
-    }
-
-    public int getCloudiness() {
-        return cloudiness;
-    }
-
-    public void setCloudiness(int cloudiness) {
-        this.cloudiness = cloudiness;
-    }
-
     public float getWindSpeed() {
         return windSpeed;
     }
@@ -207,36 +189,12 @@ public class WeatherForecastModel implements Parcelable {
         this.windGust = windGust;
     }
 
-    public int getVisibility() {
-        return visibility;
-    }
-
-    public void setVisibility(int visibility) {
-        this.visibility = visibility;
-    }
-
-    public float getPop() {
-        return pop;
-    }
-
-    public void setPop(float pop) {
-        this.pop = pop;
-    }
-
     public float getRain3h() {
         return rain3h;
     }
 
     public void setRain3h(float rain3h) {
         this.rain3h = rain3h;
-    }
-
-    public String getSysPod() {
-        return sysPod;
-    }
-
-    public void setSysPod(String sysPod) {
-        this.sysPod = sysPod;
     }
 
     public String getDtTxt() {
@@ -263,17 +221,12 @@ public class WeatherForecastModel implements Parcelable {
         dest.writeString(weatherDescription);
         dest.writeString(weatherIcon);
         dest.writeInt(pressure);
-        dest.writeInt(seaLevel);
-        dest.writeInt(groundLevel);
-        dest.writeFloat(tempKF);
-        dest.writeInt(cloudiness);
         dest.writeFloat(windSpeed);
         dest.writeInt(windDegree);
         dest.writeFloat(windGust);
-        dest.writeInt(visibility);
-        dest.writeFloat(pop);
-        dest.writeFloat(rain3h);
-        dest.writeString(sysPod);
         dest.writeString(dtTxt);
+        dest.writeLong(sunrise);
+        dest.writeLong(sunset);
+        dest.writeString(city);
     }
 }

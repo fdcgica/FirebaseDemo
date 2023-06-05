@@ -136,33 +136,40 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
                 if (weatherTodayModels.size() > 0) {
                     WeatherTodayModel weatherToday = weatherTodayModels.get(0);
-                    if (weatherToday.getCallback() != 404){
-                        // Set the values in the views
-                        mLocation.setText("" + weatherToday.getLocation());
-                        mDate.setText("" + FormatUtils.formatDate(FormatUtils.formatDate(weatherToday.getDateTime())));
-                        mTemp.setText("" + weatherToday.getTemp() + "°C");
-                        mTempMin.setText("Min: " + weatherToday.getTempMin() + "°C");
-                        mTempMax.setText("Max: " + weatherToday.getTempMax() + "°C");
-                        mStatus.setText("" + weatherToday.getStatus());
-                        mSunrise.setText("" + FormatUtils.getFormattedSunriseTime(weatherToday.getSunrise()));
-                        mSunset.setText("" + FormatUtils.getFormattedSunsetTime(weatherToday.getSunset()));
-                        mWind.setText("" + weatherToday.getWindSpeed() + " m/s");
-                        mPressure.setText("" + weatherToday.getPressure() + " hPa");
-                        mHumidity.setText("" + weatherToday.getHumidity() + "%");
-                    }
-                    else{
-                        Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
-                    }
+
+                    // Set the values in the views
+                    mLocation.setText("" + weatherToday.getLocation());
+                    mDate.setText("" + FormatUtils.formatDate(FormatUtils.formatDate(weatherToday.getDateTime())));
+                    mTemp.setText("" + weatherToday.getTemp() + "°C");
+                    mTempMin.setText("Min: " + weatherToday.getTempMin() + "°C");
+                    mTempMax.setText("Max: " + weatherToday.getTempMax() + "°C");
+                    mStatus.setText("" + weatherToday.getStatus());
+                    mSunrise.setText("" + FormatUtils.getFormattedSunriseTime(weatherToday.getSunrise()));
+                    mSunset.setText("" + FormatUtils.getFormattedSunsetTime(weatherToday.getSunset()));
+                    mWind.setText("" + weatherToday.getWindSpeed() + " m/s");
+                    mPressure.setText("" + weatherToday.getPressure() + " hPa");
+                    mHumidity.setText("" + weatherToday.getHumidity() + "%");
                 }
                 pd.dismiss();
             }
 
             @Override
             public void onError(String message) {
-
+                Toast.makeText(getActivity(), "City not Found", Toast.LENGTH_SHORT).show();
+                mLocation.setText("Not found");
+                mDate.setText("");
+                mTemp.setText("");
+                mTempMin.setText("");
+                mTempMax.setText("");
+                mStatus.setText("");
+                mSunrise.setText("");
+                mSunset.setText("");
+                mWind.setText("");
+                mPressure.setText("");
+                mHumidity.setText("");
+                pd.dismiss();
             }
         });
-        pd.dismiss();
     }
     private void getWeatherToday(){
         pd.setMessage("Fetching Data");
@@ -198,7 +205,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
                     @Override
                     public void onError(String message) {
-
+                        Toast.makeText(getActivity(), "Error in fetching data", Toast.LENGTH_SHORT).show();
                     }
                 });
             }

@@ -70,6 +70,8 @@ public class WeatherDataService {
                             float formattedTempMin = FormatUtils.formatFloatToTwoDecimalPlaces(celsiusTempMin);
                             float formattedTempMax = FormatUtils.formatFloatToTwoDecimalPlaces(celsiusTempMax);
 
+                            reportDay.setPressure(dayMain.optInt("pressure"));
+                            reportDay.setHumidity(dayMain.optInt("humidity"));
                             reportDay.setTemp(formattedTemp);
                             reportDay.setTempMin(formattedTempMin);
                             reportDay.setTempMax(formattedTempMax);
@@ -81,11 +83,12 @@ public class WeatherDataService {
 
                             forecast.add(reportDay);
                         }
-                    }
-                    JSONObject city = response.optJSONObject("city");//city{}
-                    if(city != null){
-                        for (int y = 0; y < city.length(); y++){
 
+                        JSONObject city = response.optJSONObject("city");//city{}
+                        if(city != null){
+//                            reportDay.setSunrise(city.optLong("sunrise"));
+//                            reportDay.setSunset(city.optLong("sunset"));
+//                            reportDay.setCity(city.optString("name"));
                         }
                     }
                     weatherAPICallback.onSuccess(forecast);
