@@ -118,23 +118,28 @@ public class MainActivity extends AppCompatActivity {
                 switch (item.getItemId()){
                     case R.id.home:
                     {
+                        navigationView.setCheckedItem(R.id.home);
                         getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, homeFragment).commit();
                         drawerLayout.closeDrawer(GravityCompat.START);
                         break;
                     }
-                    case R.id.forecasts:{
-                        getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, forecastFragment).commit();
+                    case R.id.forecasts:
+                    {
+                        navigationView.setCheckedItem(R.id.forecasts);
+                        getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, forecastCurrentFragment).commit();
                         drawerLayout.closeDrawer(GravityCompat.START);
                         break;
                     }
                     case R.id.profile:
                     {
+                        navigationView.setCheckedItem(R.id.profile);
                         getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, userProfileFragment).commit();
                         drawerLayout.closeDrawer(GravityCompat.START);
                         break;
                     }
                     case R.id.settings:
                     {
+                        navigationView.setCheckedItem(R.id.settings);
                         getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, userSettingsFragment).commit();
                         drawerLayout.closeDrawer(GravityCompat.START);
                         break;

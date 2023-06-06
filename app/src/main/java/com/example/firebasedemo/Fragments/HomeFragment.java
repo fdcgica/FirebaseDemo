@@ -1,100 +1,76 @@
 package com.example.firebasedemo.Fragments;
 
-import static android.app.Activity.RESULT_OK;
-import static android.content.ContentValues.TAG;
-import static com.example.firebasedemo.Constants.Constants.LATITUDE;
-import static com.example.firebasedemo.Constants.Constants.LONGITUDE;
-
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
-
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-
 import android.speech.RecognizerIntent;
-import android.speech.SpeechRecognizer;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
 
 import com.example.firebasedemo.Interface.CoordinatesCallback;
 import com.example.firebasedemo.Interface.WeatherTodayCallback;
 import com.example.firebasedemo.Model.WeatherTodayModel;
 import com.example.firebasedemo.R;
 import com.example.firebasedemo.Services.WeatherTodayService;
-import com.example.firebasedemo.Singleton.CurrentUserSingleton;
 import com.example.firebasedemo.Utils.FormatUtils;
 import com.example.firebasedemo.Utils.LocationUtils;
-import com.google.android.gms.location.LocationCallback;
-
 import java.util.ArrayList;
 import java.util.List;
-
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link HomeFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class HomeFragment extends Fragment implements View.OnClickListener {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
     private TextView mLocation, mDate, mTemp,mTempMin,mTempMax,mStatus,mSunrise,mSunset,mWind,mPressure,mHumidity;
     private LocationUtils locationUtils;
     private ProgressDialog pd;
     private LinearLayout mRefreshContainer;
     private ImageView mLocatebySpeech;
-    private static final int REQUEST_CODE_SPEECH_INPUT = 100;
-
-    public HomeFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment HomeFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static HomeFragment newInstance(String param1, String param2) {
-        HomeFragment fragment = new HomeFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private ActivityResultLauncher<String> permissionLauncher;
+    private ActivityResultLauncher<Intent> speechRecognitionLauncher;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
 
+        // Initialize the permission launcher
+        permissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+            if (isGranted) {
+                // Permission granted
+                getWeatherToday();
+            } else {
+                // Permission denied
+                Toast.makeText(getActivity(), "Permission Denied", Toast.LENGTH_SHORT).show();
+            }
+        });
+        speechRecognitionLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent data = result.getData();
+                        if (data != null) {
+                            ArrayList<String> placesText = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                            if (placesText != null && placesText.size() > 0) {
+                                String results = placesText.get(0);
+                                getWeatherbySpeech(results);
+                            }
+                        }
+                    }
+                }
+        );
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -117,11 +93,31 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         locationUtils = new LocationUtils();
         pd = new ProgressDialog(getActivity());
         ((AppCompatActivity) requireActivity()).getSupportActionBar().setTitle("Home");
-
-        getWeatherToday();
+        if (ActivityCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            getWeatherToday();
+        } else {
+            requestPermission();
+        }
         return view;
     }
+    private void requestPermission() {
+        if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
+            new AlertDialog.Builder(requireActivity())
+                    .setTitle("Permission Needed")
+                    .setMessage("This permission is needed to use the application (Location-based services)")
+                    .setPositiveButton("Okay", (dialog, which) -> {
+                        permissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION);
+                    })
+                    .setNegativeButton("Negative", (dialog, which) -> {
+                        dialog.dismiss();
+                    })
+                    .create().show();
+        } else {
+            permissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION);
+        }
+    }
     public void getWeatherbySpeech(String result){
+
         pd.setMessage("Fetching Data");
         pd.setCancelable(false);
         pd.show();
@@ -131,7 +127,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
             @SuppressLint("SetTextI18n")
             @Override
-            public void onSuccess(List<WeatherTodayModel> weatherTodayModels) {
+             public void onSuccess(List<WeatherTodayModel> weatherTodayModels) {
 
 
                 if (weatherTodayModels.size() > 0) {
@@ -206,6 +202,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                     @Override
                     public void onError(String message) {
                         Toast.makeText(getActivity(), "Error in fetching data", Toast.LENGTH_SHORT).show();
+                        pd.dismiss();
                     }
                 });
             }
@@ -215,21 +212,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         intent.putExtra(RecognizerIntent.EXTRA_PROMPT,"Speak");
-        startActivityForResult(intent, REQUEST_CODE_SPEECH_INPUT);
-
+        speechRecognitionLauncher.launch(intent);
     }
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == REQUEST_CODE_SPEECH_INPUT && resultCode == RESULT_OK){
-            ArrayList<String> placesText = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-            String result = "";
-            result = placesText.get(0);
-            getWeatherbySpeech(result);
-        }
-    }
-
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {

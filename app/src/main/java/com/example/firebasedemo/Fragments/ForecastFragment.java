@@ -17,6 +17,9 @@ import com.example.firebasedemo.R;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ForecastFragment extends Fragment {
     private TabLayout tabLayout;
     private ViewPager2 viewPager;
@@ -37,8 +40,11 @@ public class ForecastFragment extends Fragment {
 
         tabLayout = view.findViewById(R.id.tab_layout);
         viewPager = view.findViewById(R.id.view_pager);
+        List<Fragment> forecastFragments = new ArrayList<>();
+        forecastFragments.add(new ForecastFragment());
+        forecastFragments.add(new UserSettingsFragment());
 
-        ForecastPagerAdapter adapter = new ForecastPagerAdapter(requireActivity());
+        ForecastPagerAdapter adapter = new ForecastPagerAdapter(getChildFragmentManager(), getLifecycle(), forecastFragments);
         viewPager.setAdapter(adapter);
 
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {

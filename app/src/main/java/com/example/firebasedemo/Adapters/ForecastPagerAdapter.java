@@ -5,37 +5,28 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.lifecycle.Lifecycle;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ForecastPagerAdapter extends FragmentPagerAdapter {
+public class ForecastPagerAdapter extends FragmentStateAdapter {
+    private List<Fragment> fragmentList;
 
-    public ForecastPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
-        super(fragmentActivity);
-    }
-
-    @Override
-    public int getCount() {
-        return 0;
-    }
-
-    public CharSequence getPageTitle(int position) {
-        // Return the title for each tab based on the position
-        switch (position) {
-            case 0:
-                return "Current Location";
-            case 1:
-                return "Specify Location";
-            case 2:
-            default:
-                return null;
-        }
+    public ForecastPagerAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, List<Fragment> fragments) {
+        super(fragmentManager, lifecycle);
+        this.fragmentList = fragments;
     }
 
     @NonNull
     @Override
-    public Fragment getItem(int position) {
-        return null;
+    public Fragment createFragment(int position) {
+        return fragmentList.get(position);
+    }
+
+    @Override
+    public int getItemCount() {
+        return fragmentList.size();
     }
 }

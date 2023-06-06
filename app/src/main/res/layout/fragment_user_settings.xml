@@ -5,19 +5,15 @@
     android:layout_height="match_parent"
     tools:context=".Fragments.UserSettingsFragment">
 
-    <Button
-        android:id="@+id/speechToTextButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="Start Speech to Text" />
-
     <TextView
         android:id="@+id/resultTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/speechToTextButton"
+        android:layout_centerInParent="true"
         android:layout_marginTop="16dp"
+        android:textSize="40sp"
+        android:gravity="center"
+        android:text="TO FOLLOW"
         android:textAppearance="?android:textAppearanceLarge" />
 
 </RelativeLayout>

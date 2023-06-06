@@ -33,60 +33,65 @@ public class WeatherTodayService {
         this.context = context;
     }
 
-    public void getWeatherToday(WeatherTodayCallback weatherTodayCallback){
+    public void getWeatherToday(WeatherTodayCallback weatherTodayCallback) {
         String url = QUERY_FOR_CURRENT_WEATHER + "lat=" + LATITUDE + "&lon=" + LONGITUDE + "&appid=" + API_KEY;
-        List<WeatherTodayModel> currentWeather = new ArrayList<>();
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+                List<WeatherTodayModel> currentWeather = new ArrayList<>();
 
                 WeatherTodayModel reportDay = new WeatherTodayModel();
 
                 JSONArray weather = response.optJSONArray("weather");
-                if (weather != null){
+                if (weather != null && weather.length() > 0) {
                     JSONObject object = weather.optJSONObject(0);
                     reportDay.setStatus(object.optString("main"));
                 }
+
                 JSONObject main = response.optJSONObject("main");
+                if (main != null) {
+                    float kelvinTemp = main.optLong("temp");
+                    float kelvinTempMin = main.optLong("temp_min");
+                    float kelvinTempMax = main.optLong("temp_max");
 
-                float kelvinTemp = main.optLong("temp");
-                float kelvinTempMin = main.optLong("temp_min");
-                float kelvinTempMax = main.optLong("temp_max");
+                    float celsiusTemp = FormatUtils.convertKelvinToCelsius(kelvinTemp);
+                    float celsiusTempMin = FormatUtils.convertKelvinToCelsius(kelvinTempMin);
+                    float celsiusTempMax = FormatUtils.convertKelvinToCelsius(kelvinTempMax);
 
-                float celsiusTemp = FormatUtils.convertKelvinToCelsius(kelvinTemp);
-                float celsiusTempMin = FormatUtils.convertKelvinToCelsius(kelvinTempMin);
-                float celsiusTempMax = FormatUtils.convertKelvinToCelsius(kelvinTempMax);
+                    float formattedTemp = FormatUtils.formatFloatToTwoDecimalPlaces(celsiusTemp);
+                    float formattedTempMin = FormatUtils.formatFloatToTwoDecimalPlaces(celsiusTempMin);
+                    float formattedTempMax = FormatUtils.formatFloatToTwoDecimalPlaces(celsiusTempMax);
 
-                float formattedTemp = FormatUtils.formatFloatToTwoDecimalPlaces(celsiusTemp);
-                float formattedTempMin = FormatUtils.formatFloatToTwoDecimalPlaces(celsiusTempMin);
-                float formattedTempMax = FormatUtils.formatFloatToTwoDecimalPlaces(celsiusTempMax);
-
-                reportDay.setPressure(main.optInt("pressure"));
-                reportDay.setHumidity(main.optInt("humidity"));
-                reportDay.setTemp(formattedTemp);
-                reportDay.setTempMin(formattedTempMin);
-                reportDay.setTempMax(formattedTempMax);
+                    reportDay.setPressure(main.optInt("pressure"));
+                    reportDay.setHumidity(main.optInt("humidity"));
+                    reportDay.setTemp(formattedTemp);
+                    reportDay.setTempMin(formattedTempMin);
+                    reportDay.setTempMax(formattedTempMax);
+                }
 
                 JSONObject wind = response.optJSONObject("wind");
-
-                reportDay.setWindSpeed(wind.optLong("speed"));
+                if (wind != null) {
+                    reportDay.setWindSpeed(wind.optLong("speed"));
+                }
 
                 JSONObject sys = response.optJSONObject("sys");
+                if (sys != null) {
+                    reportDay.setSunrise(sys.optLong("sunrise"));
+                    reportDay.setSunset(sys.optLong("sunset"));
+                }
 
-                reportDay.setSunrise(sys.optLong("sunrise"));
-                reportDay.setSunset(sys.optLong("sunset"));
                 reportDay.setDateTime(response.optLong("dt"));
                 reportDay.setLocation(response.optString("name"));
                 reportDay.setCallback(response.optInt("cod"));
 
-                    currentWeather.add(reportDay);
+                currentWeather.add(reportDay);
                 weatherTodayCallback.onSuccess(currentWeather);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                weatherTodayCallback.onError("Something went wrong: "+ error);
+                weatherTodayCallback.onError("Something went wrong: " + error);
             }
         });
         MySingleton.getInstance(context).addToRequestQueue(request);
