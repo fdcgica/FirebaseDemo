@@ -81,7 +81,7 @@
                 android:layout_gravity="center"
                 android:fontFamily="sans-serif-thin"
                 android:textColor="@color/colorWhite"
-                android:textSize="90sp" />
+                android:textSize="70sp" />
 
 
             <LinearLayout
