@@ -22,11 +22,6 @@
         android:theme="@style/Theme.FirebaseDemo"
         tools:targetApi="31" >
         <activity
-            android:name=".ForecastTabsActivity"
-            android:exported="false"
-            android:label="@string/title_activity_forecast_tabs"
-            android:theme="@style/Theme.FirebaseDemo.NoActionBar" />
-        <activity
             android:name=".Activities.MainActivity"
             android:exported="false" />
         <activity

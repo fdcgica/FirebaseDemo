@@ -11,8 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.firebasedemo.Adapters.WeatherItemAdapter;
@@ -20,16 +18,15 @@ import com.example.firebasedemo.Interface.WeatherAPICallback;
 import com.example.firebasedemo.Model.WeatherForecastModel;
 import com.example.firebasedemo.R;
 import com.example.firebasedemo.Utils.LocationUtils;
-import com.google.android.gms.location.LocationRequest;
 
 import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link ForecastsFragment#newInstance} factory method to
+ * Use the {@link ForecastCurrentFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ForecastsFragment extends Fragment {
+public class ForecastCurrentFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -44,7 +41,7 @@ public class ForecastsFragment extends Fragment {
     ProgressDialog pd;
     private LocationUtils locationUtils;
 
-    public ForecastsFragment() {
+    public ForecastCurrentFragment() {
         // Required empty public constructor
     }
 
@@ -54,11 +51,11 @@ public class ForecastsFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment ForecastsFragment.
+     * @return A new instance of fragment ForecastCurrentFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ForecastsFragment newInstance(String param1, String param2) {
-        ForecastsFragment fragment = new ForecastsFragment();
+    public static ForecastCurrentFragment newInstance(String param1, String param2) {
+        ForecastCurrentFragment fragment = new ForecastCurrentFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -82,7 +79,7 @@ public class ForecastsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_forecasts, container, false);
+        View view = inflater.inflate(R.layout.fragment_forecasts_current, container, false);
         pd = new ProgressDialog(getActivity());
         myRecyclerView = view.findViewById(R.id.weather_recyclerView);
         getCurrentWeatherForecast();

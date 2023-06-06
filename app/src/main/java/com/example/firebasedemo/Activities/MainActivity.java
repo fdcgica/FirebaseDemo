@@ -4,11 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -24,7 +22,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.firebasedemo.Fragments.ForecastsFragment;
+import com.example.firebasedemo.Fragments.ForecastCurrentFragment;
+import com.example.firebasedemo.Fragments.ForecastFragment;
 import com.example.firebasedemo.Fragments.HomeFragment;
 import com.example.firebasedemo.Fragments.UserProfileFragment;
 import com.example.firebasedemo.Fragments.UserSettingsFragment;
@@ -38,7 +37,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 public class MainActivity extends AppCompatActivity {
@@ -53,7 +51,8 @@ public class MainActivity extends AppCompatActivity {
     private UserProfileFragment userProfileFragment;
     private UserSettingsFragment userSettingsFragment;
     private HomeFragment homeFragment;
-    private ForecastsFragment forecastsFragment;
+    private ForecastCurrentFragment forecastCurrentFragment;
+    private ForecastFragment forecastFragment;
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (drawerToggle.onOptionsItemSelected(item)) {
@@ -90,7 +89,8 @@ public class MainActivity extends AppCompatActivity {
         userProfileFragment = new UserProfileFragment();
         userSettingsFragment = new UserSettingsFragment();
         homeFragment = new HomeFragment();
-        forecastsFragment = new ForecastsFragment();
+        forecastCurrentFragment = new ForecastCurrentFragment();
+        forecastFragment = new ForecastFragment();
         //Toolbar
         androidx.appcompat.widget.Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Home");
@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     }
                     case R.id.forecasts:{
-                        getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, forecastsFragment).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, forecastFragment).commit();
                         drawerLayout.closeDrawer(GravityCompat.START);
                         break;
                     }
