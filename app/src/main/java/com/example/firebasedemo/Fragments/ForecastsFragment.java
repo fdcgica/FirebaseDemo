@@ -39,9 +39,6 @@ public class ForecastsFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private TextView mLat;
-    private Button forecastBtn;
-    private LocationRequest locationRequest;
     private RecyclerView myRecyclerView;
     private WeatherItemAdapter mWeatherAdapter;
     ProgressDialog pd;
@@ -86,35 +83,31 @@ public class ForecastsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_forecasts, container, false);
-
-        forecastBtn = view.findViewById(R.id.forecast_button);
         pd = new ProgressDialog(getActivity());
         myRecyclerView = view.findViewById(R.id.weather_recyclerView);
-        forecastBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                pd.setMessage("Fetching Data");
-                pd.setCancelable(false);
-                pd.show();
-                locationUtils.getCurrentLocation(getActivity(), new WeatherAPICallback() {
-                    @Override
-                    public void onSuccess(List<WeatherForecastModel> weatherForecastModels) {
-                        mWeatherAdapter = new WeatherItemAdapter(getActivity(), weatherForecastModels);
-                        myRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-                        myRecyclerView.setHasFixedSize(true);
-                        myRecyclerView.setAdapter(mWeatherAdapter);
-                        pd.dismiss();
-                    }
-
-                    @Override
-                    public void onError(String message) {
-                        Toast.makeText(getActivity(),"Somethings Wrong", Toast.LENGTH_SHORT).show();
-                        pd.dismiss();
-                    }
-                });
-            }
-        });
+        getCurrentWeatherForecast();
         ((AppCompatActivity) requireActivity()).getSupportActionBar().setTitle("Forecasts");
         return view;
+    }
+    private void getCurrentWeatherForecast(){
+        pd.setMessage("Fetching Data");
+        pd.setCancelable(false);
+        pd.show();
+        locationUtils.getCurrentLocation(getActivity(), new WeatherAPICallback() {
+            @Override
+            public void onSuccess(List<WeatherForecastModel> weatherForecastModels) {
+                mWeatherAdapter = new WeatherItemAdapter(getActivity(), weatherForecastModels);
+                myRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                myRecyclerView.setHasFixedSize(true);
+                myRecyclerView.setAdapter(mWeatherAdapter);
+                pd.dismiss();
+            }
+
+            @Override
+            public void onError(String message) {
+                Toast.makeText(getActivity(),"Somethings Wrong", Toast.LENGTH_SHORT).show();
+                pd.dismiss();
+            }
+        });
     }
 }

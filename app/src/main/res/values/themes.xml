@@ -6,4 +6,8 @@
     </style>
 
     <style name="Theme.FirebaseDemo" parent="Base.Theme.FirebaseDemo" />
+    <style name="Theme.FirebaseDemo.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
 </resources>

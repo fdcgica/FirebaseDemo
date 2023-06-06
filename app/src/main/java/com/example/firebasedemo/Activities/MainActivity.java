@@ -91,8 +91,6 @@ public class MainActivity extends AppCompatActivity {
         userSettingsFragment = new UserSettingsFragment();
         homeFragment = new HomeFragment();
         forecastsFragment = new ForecastsFragment();
-
-        getSupportFragmentManager().beginTransaction().replace(R.id.frame_container,homeFragment).commit();
         //Toolbar
         androidx.appcompat.widget.Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Home");
@@ -109,6 +107,11 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout.addDrawerListener(drawerToggle);
         drawerToggle.syncState();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        if(savedInstanceState == null){
+            getSupportFragmentManager().beginTransaction().replace(R.id.frame_container,homeFragment).commit();
+            navigationView.setCheckedItem(R.id.home);
+        }
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {

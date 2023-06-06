@@ -7,7 +7,6 @@
     <string name="sign_up">Sign Up</string>
 
     <string name="sign_up_here">No account? Sign Up</string>
-    <string name="sign_in_here">Already a user? Sign In</string>
 
 
     <string name="name">Name</string>
@@ -16,7 +15,6 @@
     <string name="password">Password</string>
     <string name="mobile">Mobile#</string>
 
-    <string name="profile_page">Profile Page</string>
     <string name="update">Update</string>
     <string name="upload">Upload</string>
     <string name="capture">Capture</string>
@@ -33,9 +31,8 @@
     <string name="wind">Wind</string>
     <string name="pressure">pressure</string>
     <string name="humidity">Humidity</string>
-    <string name="info">Info</string>
     <string name="error_msg">Something went wrong</string>
     <string name="location">Location</string>
-    <string name="updated_at">Updated At</string>
     <string name="refresh">Refresh</string>
+    <string name="title_activity_forecast_tabs">ForecastTabsActivity</string>
 </resources>
