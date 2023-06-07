@@ -1,5 +1,6 @@
 package com.example.firebasedemo.Fragments;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 
@@ -11,9 +12,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import com.example.firebasedemo.Adapters.WeatherItemAdapter;
+import com.example.firebasedemo.Interface.DialogListener;
 import com.example.firebasedemo.Interface.WeatherAPICallback;
 import com.example.firebasedemo.Model.WeatherForecastModel;
 import com.example.firebasedemo.R;
@@ -26,7 +30,7 @@ import java.util.List;
  * Use the {@link ForecastCurrentFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ForecastCurrentFragment extends Fragment {
+public class ForecastCurrentFragment extends Fragment implements View.OnClickListener, DialogListener {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -40,6 +44,8 @@ public class ForecastCurrentFragment extends Fragment {
     private WeatherItemAdapter mWeatherAdapter;
     ProgressDialog pd;
     private LocationUtils locationUtils;
+    private Button forecastDropdownBtn;
+    private DialogListener dialogListener;
 
     public ForecastCurrentFragment() {
         // Required empty public constructor
@@ -82,8 +88,10 @@ public class ForecastCurrentFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_forecasts_current, container, false);
         pd = new ProgressDialog(getActivity());
         myRecyclerView = view.findViewById(R.id.weather_recyclerView);
-        getCurrentWeatherForecast();
+        forecastDropdownBtn = view.findViewById(R.id.dropdownButton);
         ((AppCompatActivity) requireActivity()).getSupportActionBar().setTitle("Forecasts");
+        forecastDropdownBtn.setText(R.string.current_location);
+        forecastDropdownBtn.setOnClickListener(this);
         return view;
     }
     private void getCurrentWeatherForecast(){
@@ -106,5 +114,41 @@ public class ForecastCurrentFragment extends Fragment {
                 pd.dismiss();
             }
         });
+    }
+    private void showDropdownMenu(View anchorView) {
+        PopupMenu popupMenu = new PopupMenu(getActivity(), anchorView);
+        popupMenu.getMenuInflater().inflate(R.menu.forecast_menu, popupMenu.getMenu());
+
+        // Set item click listener
+        popupMenu.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.current_forecast:
+                    forecastDropdownBtn.setText(R.string.current_location);
+                    getCurrentWeatherForecast();
+                    return true;
+                case R.id.specific_forecast:
+                    forecastDropdownBtn.setText(R.string.specify_location);
+                    return true;
+                default:
+                    return false;
+            }
+        });
+        // Show the popup menu
+        popupMenu.show();
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.dropdownButton:
+                showDropdownMenu(v);
+                break;
+        }
+    }
+
+    @Override
+    public void onDataReceived(String Data) {
+
+        Toast.makeText(getActivity(), Data, Toast.LENGTH_SHORT).show();
     }
 }

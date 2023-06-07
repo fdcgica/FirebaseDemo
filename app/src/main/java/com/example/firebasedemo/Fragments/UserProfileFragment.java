@@ -3,6 +3,8 @@ package com.example.firebasedemo.Fragments;
 import static android.app.Activity.RESULT_OK;
 
 import android.Manifest;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -56,22 +58,10 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link UserProfileFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class UserProfileFragment extends Fragment implements View.OnClickListener {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     public static final int CAMERA_PERMISSION_CODE = 1;
-    public static final int CAMERA_REQUEST_CODE = 11;
-
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
     private Button uploadBtn, updateBtn, captureBtn;
@@ -87,19 +77,10 @@ public class UserProfileFragment extends Fragment implements View.OnClickListene
     private ProgressDialog pd;
     private ActivityResultLauncher<Intent> imagePickerLauncher, cameraLauncher;
 
+
     public UserProfileFragment() {
         // Required empty public constructor
     }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment UserProfileFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static UserProfileFragment newInstance(String param1, String param2) {
         UserProfileFragment fragment = new UserProfileFragment();
         Bundle args = new Bundle();
@@ -112,10 +93,6 @@ public class UserProfileFragment extends Fragment implements View.OnClickListene
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -413,6 +390,16 @@ public class UserProfileFragment extends Fragment implements View.OnClickListene
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_CODE);
         } else {
             openCamera();
+        }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == CAMERA_PERMISSION_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                openCamera();
+            } else {
+                Toast.makeText(getActivity(), "Permission Denied", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }

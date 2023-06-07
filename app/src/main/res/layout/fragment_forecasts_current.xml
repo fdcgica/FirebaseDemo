@@ -6,10 +6,18 @@
     android:layout_height="match_parent"
     tools:context=".Fragments.ForecastCurrentFragment">
 
+    <Button
+        android:id="@+id/dropdownButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:text="Choose"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/weather_recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/dropdownButton"
         android:clipToPadding="false"
         android:paddingTop="8dp"
         android:paddingBottom="8dp"

@@ -93,6 +93,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         locationUtils = new LocationUtils();
         pd = new ProgressDialog(getActivity());
         ((AppCompatActivity) requireActivity()).getSupportActionBar().setTitle("Home");
+
         if (ActivityCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             getWeatherToday();
         } else {
