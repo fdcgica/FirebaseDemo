@@ -51,4 +51,7 @@ public class FormatUtils {
         format.setTimeZone(TimeZone.getTimeZone("Asia/Manila"));
         return format.format(new Date(sunTime * 1000));
     }
+    public static String eliminateSpaces(String input) {
+        return input.replaceAll("\\s+", "");
+    }
 }

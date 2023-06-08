@@ -37,26 +37,7 @@ public class ForecastsItemFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_forecasts_item, container, false);
-        setupViews(view);
         return view;
-    }
-
-    private void setupViews(View view) {
-        TextView dateTimeTextView = view.findViewById(R.id.tv_date_time);
-        TextView mainTextView = view.findViewById(R.id.tv_main);
-        TextView descriptionTextView = view.findViewById(R.id.tv_description);
-        TextView tempTextView = view.findViewById(R.id.tv_temp);
-        TextView tempMinTextView = view.findViewById(R.id.tv_temp_min);
-        TextView tempMaxTextView = view.findViewById(R.id.tv_temp_max);
-
-        if (weatherForecastModel != null) {
-            dateTimeTextView.setText(weatherForecastModel.getDtTxt());
-            mainTextView.setText(weatherForecastModel.getWeatherMain());
-            descriptionTextView.setText(weatherForecastModel.getWeatherDescription());
-            tempTextView.setText(String.valueOf(weatherForecastModel.getTemp()));
-            tempMinTextView.setText(String.valueOf(weatherForecastModel.getTempMin()));
-            tempMaxTextView.setText(String.valueOf(weatherForecastModel.getTempMax()));
-        }
     }
 
     @Override
@@ -111,7 +92,6 @@ public class ForecastsItemFragment extends DialogFragment {
                 dialog.dismiss(); // Dismiss the dialog after clicking "OK"
             }
         });
-
         return builder.create();
     }
 }

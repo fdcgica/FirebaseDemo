@@ -2,10 +2,13 @@ package com.example.firebasedemo.Fragments;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,10 +20,13 @@ import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import com.example.firebasedemo.Adapters.WeatherItemAdapter;
+import com.example.firebasedemo.Enums.ForecastType;
 import com.example.firebasedemo.Interface.DialogListener;
 import com.example.firebasedemo.Interface.WeatherAPICallback;
 import com.example.firebasedemo.Model.WeatherForecastModel;
 import com.example.firebasedemo.R;
+import com.example.firebasedemo.Services.WeatherDataService;
+import com.example.firebasedemo.Utils.FormatUtils;
 import com.example.firebasedemo.Utils.LocationUtils;
 
 import java.util.List;
@@ -31,54 +37,29 @@ import java.util.List;
  * create an instance of this fragment.
  */
 public class ForecastCurrentFragment extends Fragment implements View.OnClickListener, DialogListener {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
     private RecyclerView myRecyclerView;
     private WeatherItemAdapter mWeatherAdapter;
     ProgressDialog pd;
     private LocationUtils locationUtils;
     private Button forecastDropdownBtn;
     private DialogListener dialogListener;
+    private Context mcontext;
 
     public ForecastCurrentFragment() {
         // Required empty public constructor
     }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ForecastCurrentFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static ForecastCurrentFragment newInstance(String param1, String param2) {
         ForecastCurrentFragment fragment = new ForecastCurrentFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
         locationUtils = new LocationUtils();
-
+        mcontext = getActivity();
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -110,10 +91,33 @@ public class ForecastCurrentFragment extends Fragment implements View.OnClickLis
 
             @Override
             public void onError(String message) {
-                Toast.makeText(getActivity(),"Somethings Wrong", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(),"Somethings Wrong "+message, Toast.LENGTH_SHORT).show();
                 pd.dismiss();
             }
         });
+    }
+    private void getCurrentWeatherForecastSpecific(String Data){
+        pd.setMessage("Fetching Data");
+        pd.setCancelable(false);
+        pd.show();
+        WeatherDataService weatherDataService = new WeatherDataService(getActivity());
+        weatherDataService.getForecastSpecific(Data, new WeatherAPICallback() {
+            @Override
+            public void onSuccess(List<WeatherForecastModel> weatherForecastModels) {
+                mWeatherAdapter = new WeatherItemAdapter(getActivity(), weatherForecastModels);
+                myRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                myRecyclerView.setHasFixedSize(true);
+                myRecyclerView.setAdapter(mWeatherAdapter);
+                pd.dismiss();
+            }
+
+            @Override
+            public void onError(String message) {
+                Toast.makeText(getActivity(),"City Not Found", Toast.LENGTH_SHORT).show();
+                pd.dismiss();
+            }
+        });
+
     }
     private void showDropdownMenu(View anchorView) {
         PopupMenu popupMenu = new PopupMenu(getActivity(), anchorView);
@@ -124,10 +128,11 @@ public class ForecastCurrentFragment extends Fragment implements View.OnClickLis
             switch (item.getItemId()) {
                 case R.id.current_forecast:
                     forecastDropdownBtn.setText(R.string.current_location);
-                    getCurrentWeatherForecast();
+                    handleForecastType(ForecastType.CURRENT);
                     return true;
                 case R.id.specific_forecast:
                     forecastDropdownBtn.setText(R.string.specify_location);
+                    handleForecastType(ForecastType.SPECIFIC);
                     return true;
                 default:
                     return false;
@@ -147,8 +152,23 @@ public class ForecastCurrentFragment extends Fragment implements View.OnClickLis
     }
 
     @Override
-    public void onDataReceived(String Data) {
-
-        Toast.makeText(getActivity(), Data, Toast.LENGTH_SHORT).show();
+    public void onDataReceived(CharSequence Data) {
+        getCurrentWeatherForecastSpecific(Data.toString());
     }
+    private void showSpecificForecastDialog() {
+        SpecificForecastFragment specificForecastFragment = SpecificForecastFragment.newInstance();
+        specificForecastFragment.setCityEnteredListener(this); // Set the listener to receive the entered city
+        specificForecastFragment.show(getParentFragmentManager(), "specific_forecast_dialog");
+    }
+    private void handleForecastType(ForecastType forecastType) {
+        switch (forecastType) {
+            case CURRENT:
+                getCurrentWeatherForecast();
+                break;
+            case SPECIFIC:
+                showSpecificForecastDialog();
+                break;
+        }
+    }
+
 }
