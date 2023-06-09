@@ -334,13 +334,21 @@ public class UserProfileFragment extends Fragment implements View.OnClickListene
         currentUserRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String userName_txt = "";
+                String nameTxt = "";
+                String email_txt = "";
+                String mobile_txt = "";
+                String uri = "";
                 if (snapshot.exists()) {
-                    if(snapshot.child("name").getValue() != null ) {
-                        String userName_txt = snapshot.child("userName").getValue().toString();
-                        String nameTxt = snapshot.child("name").getValue().toString();
-                        String email_txt = snapshot.child("email").getValue().toString();
-                        String mobile_txt = snapshot.child("mobileNo").getValue().toString();
-                        String uri = snapshot.child("imageUrl").getValue().toString();
+                    if(snapshot.child("name").getValue() != null && snapshot.child("userName").getValue() != null
+                        && snapshot.child("name").getValue() != null && snapshot.child("email").getValue() != null
+                    && snapshot.child("mobileNo").getValue() != null && snapshot.child("imageUrl").getValue() != null) {
+
+                        userName_txt = snapshot.child("userName").getValue().toString();
+                        nameTxt = snapshot.child("name").getValue().toString();
+                        email_txt = snapshot.child("email").getValue().toString();
+                        mobile_txt = snapshot.child("mobileNo").getValue().toString();
+                        uri = snapshot.child("imageUrl").getValue().toString();
                         userName.setText(userName_txt);
                         name.setText(nameTxt);
                         mobileNo.setText(mobile_txt);

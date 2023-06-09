@@ -196,10 +196,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()){
-                    if(snapshot.child("name").getValue() != null ) {
-                        String name = snapshot.child("name").getValue().toString();
-                        String email = snapshot.child("email").getValue().toString();
-                        String uri = snapshot.child("imageUrl").getValue().toString();
+                    String name = "";
+                    String email = "";
+                    String uri = "";
+                    if(snapshot.child("name").getValue() != null && snapshot.child("email").getValue() != null
+                            && snapshot.child("imageUrl").getValue() != null){
+                        name = snapshot.child("name").getValue().toString();
+                        email = snapshot.child("email").getValue().toString();
+                        uri = snapshot.child("imageUrl").getValue().toString();
                         headerName.setText(name);
                         headerEmail.setText(email);
 
