@@ -6,8 +6,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -21,14 +19,14 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.firebasedemo.Fragments.ForecastCurrentFragment;
-import com.example.firebasedemo.Fragments.ForecastFragment;
 import com.example.firebasedemo.Fragments.HomeFragment;
 import com.example.firebasedemo.Fragments.UserProfileFragment;
 import com.example.firebasedemo.Fragments.UserSettingsFragment;
 import com.example.firebasedemo.R;
 import com.example.firebasedemo.Singleton.CurrentUserSingleton;
+import com.example.firebasedemo.Utils.CommonUtils;
+import com.example.firebasedemo.Utils.LoadingDialog;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -46,21 +44,19 @@ public class MainActivity extends AppCompatActivity {
     private ActionBarDrawerToggle drawerToggle;
     private TextView headerName, headerEmail;
     private ImageView headerImage;
-    private ProgressDialog progressDialog;
+    private LoadingDialog pd;
     private Context context;
     private UserProfileFragment userProfileFragment;
     private UserSettingsFragment userSettingsFragment;
     private HomeFragment homeFragment;
     private ForecastCurrentFragment forecastCurrentFragment;
-    private ForecastFragment forecastFragment;
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (drawerToggle.onOptionsItemSelected(item)) {
             // Close keyboard if it's open
             View view = getCurrentFocus();
             if (view != null) {
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                CommonUtils.closeKeyboard(this);
             }
             return true;
         }
@@ -82,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
         context = getApplicationContext();
 
         //Progress Dialog
-        progressDialog = new ProgressDialog(this);
+        pd = new LoadingDialog(this);
         //Frame Container
         frameContainer = findViewById(R.id.frame_container);
         //Fragments
@@ -90,7 +86,6 @@ public class MainActivity extends AppCompatActivity {
         userSettingsFragment = new UserSettingsFragment();
         homeFragment = new HomeFragment();
         forecastCurrentFragment = new ForecastCurrentFragment();
-        forecastFragment = new ForecastFragment();
         //Toolbar
         androidx.appcompat.widget.Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Home");
@@ -191,6 +186,11 @@ public class MainActivity extends AppCompatActivity {
         CurrentUserSingleton.getInstance().setCurrentUserId(uid);
         DatabaseReference usersRef  = FirebaseDatabase.getInstance().getReference().child("Users");
         DatabaseReference currentUserRef = usersRef.child(uid);
+        Uri uir1 = getIntent().getData();
+        if(uir1 !=null){
+            String path = uir1.toString();
+            Toast.makeText(context, "path = "+path, Toast.LENGTH_SHORT).show();
+        }
 
         currentUserRef.addValueEventListener(new ValueEventListener() {
             @Override

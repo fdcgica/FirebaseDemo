@@ -98,7 +98,7 @@ public class SpecificForecastFragment extends DialogFragment implements CitySpee
             public void onClick(DialogInterface dialog, int which) {
                 CharSequence input = cityName.getText().toString();
                 if(TextUtils.isEmpty(input)){
-                    Toast.makeText(getActivity(),"Please input all fields", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(),"Enter a City", Toast.LENGTH_SHORT).show();
                 }
                 else {
                     mListener.onDataReceived(input);

@@ -36,6 +36,7 @@ import android.widget.Toast;
 
 import com.example.firebasedemo.Model.Users;
 import com.example.firebasedemo.R;
+import com.example.firebasedemo.Utils.LoadingDialog;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
@@ -74,7 +75,7 @@ public class UserProfileFragment extends Fragment implements View.OnClickListene
     private Uri imageUri;
     private byte[] imageDataUri;
     private Context context;
-    private ProgressDialog pd;
+    private LoadingDialog pd;
     private ActivityResultLauncher<Intent> imagePickerLauncher, cameraLauncher;
 
 
@@ -113,7 +114,7 @@ public class UserProfileFragment extends Fragment implements View.OnClickListene
         mobileNo = view.findViewById(R.id.mobile);
         email = view.findViewById(R.id.email);
         context = getContext();
-        pd = new ProgressDialog(context);
+        pd = new LoadingDialog(getActivity());
 
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -126,8 +127,7 @@ public class UserProfileFragment extends Fragment implements View.OnClickListene
                 new ActivityResultCallback<ActivityResult>() {
                     @Override
                     public void onActivityResult(ActivityResult result) {
-                        pd.setMessage("Please wait");
-                        pd.show();
+                        pd.show(R.layout.please_wait_dialog);
                         if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                             Intent data = result.getData();
                             imageUri = data.getData();
@@ -147,8 +147,7 @@ public class UserProfileFragment extends Fragment implements View.OnClickListene
                 new ActivityResultCallback<ActivityResult>() {
                     @Override
                     public void onActivityResult(ActivityResult result) {
-                        pd.setMessage("Please wait");
-                        pd.show();
+                        pd.show(R.layout.please_wait_dialog);
                         imageUri = null;
                         if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                             Intent data = result.getData();
@@ -204,9 +203,7 @@ public class UserProfileFragment extends Fragment implements View.OnClickListene
     }
 
     private void updateUser(DatabaseReference currentUserRef) {
-
-        pd.setMessage("Please Wait");
-        pd.show();
+        pd.show(R.layout.please_wait_dialog);
 
         String userNameTxt = userName.getText().toString();
         String nameTxt = name.getText().toString();

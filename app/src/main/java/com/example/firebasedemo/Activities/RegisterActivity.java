@@ -2,8 +2,6 @@ package com.example.firebasedemo.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -11,9 +9,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.firebasedemo.Model.Users;
 import com.example.firebasedemo.R;
+import com.example.firebasedemo.Utils.CommonUtils;
+import com.example.firebasedemo.Utils.LoadingDialog;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -23,14 +22,11 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.HashMap;
-
 public class RegisterActivity extends AppCompatActivity {
     private TextInputEditText username,name,email,password,mobileNum;
     private Button register;
     private TextView loginUser;
-    ProgressDialog pd;
+    private LoadingDialog pd;
 
     private DatabaseReference mRootRef;
     private FirebaseAuth mAuth;
@@ -47,7 +43,7 @@ public class RegisterActivity extends AppCompatActivity {
         password = findViewById(R.id.password);
         register = findViewById(R.id.register);
         loginUser = findViewById(R.id.login_user);
-        pd = new ProgressDialog(this);
+        pd = new LoadingDialog(this);
 
         loginUser.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,8 +73,7 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
     private void registerUser(String username,String name, String email, String password, String mobileNo){
-        pd.setMessage("Please Wait");
-        pd.show();
+        pd.show(R.layout.please_wait_dialog);
         mRootRef = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
         mAuth.createUserWithEmailAndPassword(email,password).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
@@ -91,8 +86,9 @@ public class RegisterActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if(task.isSuccessful()){
-                            pd.dismiss();
-                            Toast.makeText(RegisterActivity.this, "Successfully Registered", Toast.LENGTH_SHORT).show();
+                           CommonUtils.closeKeyboard(RegisterActivity.this);
+                           pd.dismiss();
+                           Toast.makeText(RegisterActivity.this, "Successfully Registered", Toast.LENGTH_SHORT).show();
                            Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                            startActivity(intent);

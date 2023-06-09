@@ -77,9 +77,9 @@ public class ForecastsItemFragment extends DialogFragment {
             dateTimeTextView.setText(""+day+"\n"+FormatUtils.formatDate(weatherForecastModel.getDtTxt()));
             mainTextView.setText(weatherForecastModel.getWeatherMain());
             descriptionTextView.setText(weatherForecastModel.getWeatherDescription().substring(0,1).toUpperCase() + weatherForecastModel.getWeatherDescription().substring(1));
-            tempTextView.setText("Temperature: "+weatherForecastModel.getTemp());
-            tempMinTextView.setText("Min Temp: "+weatherForecastModel.getTempMin());
-            tempMaxTextView.setText("Max Temp: "+weatherForecastModel.getTempMax());
+            tempTextView.setText("Temperature: "+weatherForecastModel.getTemp() + "°C");
+            tempMinTextView.setText("Min Temp: "+weatherForecastModel.getTempMin() + "°C");
+            tempMaxTextView.setText("Max Temp: "+weatherForecastModel.getTempMax() + "°C");
             tempSunrise.setText("Sunrise: " + FormatUtils.getSunTime(weatherForecastModel.getSunrise()));
             tempSunset.setText("Sunset: " + FormatUtils.getSunTime(weatherForecastModel.getSunset()));
         }

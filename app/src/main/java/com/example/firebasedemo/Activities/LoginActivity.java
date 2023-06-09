@@ -2,8 +2,6 @@ package com.example.firebasedemo.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,20 +13,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.firebasedemo.R;
-import com.example.firebasedemo.Singleton.CurrentUserSingleton;
+import com.example.firebasedemo.Utils.CommonUtils;
+import com.example.firebasedemo.Utils.LoadingDialog;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     private TextView mUserRegister;
     private Button mLogin;
     private FirebaseAuth mAuth;
-    private ProgressDialog pd;
+    private LoadingDialog pd;
     private TextInputEditText mEmail,mPassword;
 
 
@@ -41,7 +39,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mPassword = findViewById(R.id.login_password);
         mLogin = findViewById(R.id.login_btn);
         mUserRegister = findViewById(R.id.register_user);
-        pd = new ProgressDialog(this);
+        pd = new LoadingDialog(this);
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -71,13 +69,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
     private void loginUser(String email, String password){
-        pd.setMessage("Please Wait");
-        pd.setCancelable(false);
-        pd.show();
+        pd.show(R.layout.custom_loading_dialog);
         mAuth.signInWithEmailAndPassword(email,password).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
             @Override
             public void onSuccess(AuthResult authResult) {
-                closeKeyboard();
+                CommonUtils.closeKeyboard(LoginActivity.this);
                 pd.dismiss();
                 startActivity(new Intent(LoginActivity.this, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP));
                 finish();
@@ -89,13 +85,5 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 pd.dismiss();
             }
         });
-    }
-
-    private void closeKeyboard() {
-        View view = getCurrentFocus();
-        if (view != null) {
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        }
     }
 }

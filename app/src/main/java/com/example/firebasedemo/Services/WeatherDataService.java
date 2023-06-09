@@ -35,7 +35,6 @@ public class WeatherDataService {
      public void getForecast(WeatherAPICallback weatherAPICallback){
 
          String url = QUERY_FOR_FORECAST + "lat=" + LATITUDE + "&lon=" + LONGITUDE + "&appid=" + API_KEY;
-         String url_specific = QUERY_FOR_SPECIFIC_FORECAST + "q=" + "" + "&appid=" + API_KEY;
 
          List<WeatherForecastModel> forecast = new ArrayList<>();
 

@@ -21,7 +21,54 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/cityNameInputLayout"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:hint="Enter City name"
+                    app:boxStrokeColor="@color/netflix_grey"
+                    app:boxStrokeErrorColor="@color/netflix_red"
+                    app:endIconMode="clear_text"
+                    app:hintTextColor="@color/netflix_grey">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/cityNameInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:textColor="@color/colorWhite" />
+                </com.google.android.material.textfield.TextInputLayout>
+                <Space
+                    android:layout_width="10dp"
+                    android:layout_height="wrap_content" />
+                <ImageView
+                    android:id="@+id/searchButton"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_search"
+                    app:tint="@color/colorWhite" />
+                <Space
+                    android:layout_width="10dp"
+                    android:layout_height="wrap_content" />
+                <ImageView
+                    android:id="@+id/speechSearch"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_microphone"
+                    app:tint="@color/colorWhite" />
+
+            </LinearLayout>
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="100dp" />
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -33,19 +80,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/location"
+                    android:textStyle="bold"
                     android:textColor="@color/colorWhite"
-                    android:textSize="24sp" />
-
-                <Space
-                    android:layout_width="15dp"
-                    android:layout_height="wrap_content" />
-
-                <ImageView
-                    android:id="@+id/speechSearch"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_microphone"
-                    app:tint="@color/colorWhite" />
+                    android:textSize="30sp" />
 
 
             </LinearLayout>
@@ -55,7 +92,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorWhite"
-                android:textSize="14sp" />
+                android:textSize="15sp" />
 
         </LinearLayout>
 
@@ -72,7 +109,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:textColor="@color/colorWhite"
-                android:textSize="18sp" />
+                android:textSize="24sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/temp"

@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.PopupMenu;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.firebasedemo.Adapters.WeatherItemAdapter;
@@ -27,6 +28,7 @@ import com.example.firebasedemo.Model.WeatherForecastModel;
 import com.example.firebasedemo.R;
 import com.example.firebasedemo.Services.WeatherDataService;
 import com.example.firebasedemo.Utils.FormatUtils;
+import com.example.firebasedemo.Utils.LoadingDialog;
 import com.example.firebasedemo.Utils.LocationUtils;
 
 import java.util.List;
@@ -39,11 +41,11 @@ import java.util.List;
 public class ForecastCurrentFragment extends Fragment implements View.OnClickListener, DialogListener {
     private RecyclerView myRecyclerView;
     private WeatherItemAdapter mWeatherAdapter;
-    ProgressDialog pd;
+    private LoadingDialog pd;
     private LocationUtils locationUtils;
     private Button forecastDropdownBtn;
-    private DialogListener dialogListener;
     private Context mcontext;
+    private TextView locationText;
 
     public ForecastCurrentFragment() {
         // Required empty public constructor
@@ -67,22 +69,26 @@ public class ForecastCurrentFragment extends Fragment implements View.OnClickLis
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_forecasts_current, container, false);
-        pd = new ProgressDialog(getActivity());
+        pd = new LoadingDialog(getActivity());
         myRecyclerView = view.findViewById(R.id.weather_recyclerView);
         forecastDropdownBtn = view.findViewById(R.id.dropdownButton);
+        locationText = view.findViewById(R.id.locationText);
         ((AppCompatActivity) requireActivity()).getSupportActionBar().setTitle("Forecasts");
         forecastDropdownBtn.setText(R.string.current_location);
+        getCurrentWeatherForecast();
         forecastDropdownBtn.setOnClickListener(this);
         return view;
     }
     private void getCurrentWeatherForecast(){
-        pd.setMessage("Fetching Data");
-        pd.setCancelable(false);
-        pd.show();
+        pd.show(R.layout.custom_loading_dialog);
         locationUtils.getCurrentLocation(getActivity(), new WeatherAPICallback() {
             @Override
             public void onSuccess(List<WeatherForecastModel> weatherForecastModels) {
                 mWeatherAdapter = new WeatherItemAdapter(getActivity(), weatherForecastModels);
+                String city = "";
+                WeatherForecastModel getCitytxt = weatherForecastModels.get(0);
+                city = getCitytxt.getCity();
+                locationText.setText(city);
                 myRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
                 myRecyclerView.setHasFixedSize(true);
                 myRecyclerView.setAdapter(mWeatherAdapter);
@@ -97,14 +103,15 @@ public class ForecastCurrentFragment extends Fragment implements View.OnClickLis
         });
     }
     private void getCurrentWeatherForecastSpecific(String Data){
-        pd.setMessage("Fetching Data");
-        pd.setCancelable(false);
-        pd.show();
+        pd.show(R.layout.custom_loading_dialog);
         WeatherDataService weatherDataService = new WeatherDataService(getActivity());
         weatherDataService.getForecastSpecific(Data, new WeatherAPICallback() {
             @Override
             public void onSuccess(List<WeatherForecastModel> weatherForecastModels) {
-                mWeatherAdapter = new WeatherItemAdapter(getActivity(), weatherForecastModels);
+                mWeatherAdapter = new WeatherItemAdapter(getActivity(), weatherForecastModels);String city = "";
+                WeatherForecastModel getCitytxt = weatherForecastModels.get(0);
+                city = getCitytxt.getCity();
+                locationText.setText(city);
                 myRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
                 myRecyclerView.setHasFixedSize(true);
                 myRecyclerView.setAdapter(mWeatherAdapter);
