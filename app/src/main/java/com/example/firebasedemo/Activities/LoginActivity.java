@@ -69,7 +69,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
     private void loginUser(String email, String password){
-        pd.show(R.layout.custom_loading_dialog);
+        pd.show(R.layout.please_wait_dialog);
         mAuth.signInWithEmailAndPassword(email,password).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
             @Override
             public void onSuccess(AuthResult authResult) {

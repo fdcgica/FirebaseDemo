@@ -108,7 +108,8 @@ public class ForecastCurrentFragment extends Fragment implements View.OnClickLis
         weatherDataService.getForecastSpecific(Data, new WeatherAPICallback() {
             @Override
             public void onSuccess(List<WeatherForecastModel> weatherForecastModels) {
-                mWeatherAdapter = new WeatherItemAdapter(getActivity(), weatherForecastModels);String city = "";
+                mWeatherAdapter = new WeatherItemAdapter(getActivity(), weatherForecastModels);
+                String city = "";
                 WeatherForecastModel getCitytxt = weatherForecastModels.get(0);
                 city = getCitytxt.getCity();
                 locationText.setText(city);

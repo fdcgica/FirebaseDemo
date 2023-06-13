@@ -127,7 +127,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                     .setPositiveButton("Okay", (dialog, which) -> {
                         permissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION);
                     })
-                    .setNegativeButton("Negative", (dialog, which) -> {
+                    .setNegativeButton("Cancel", (dialog, which) -> {
                         dialog.dismiss();
                     })
                     .create().show();
